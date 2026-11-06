@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --axiom-navy: #0b132b;
+  --axiom-navy-dark: #050914;
+  --axiom-navy-sub: #152039;
+  --axiom-amber: #f59e0b;
+  --axiom-amber-hover: #d97706;
+  --axiom-amber-light: #fef3c7;
+  --axiom-slate-bg: #f8fafc;
+  --axiom-border-light: #dce2ea;
+  --axiom-border-dark: #475569;
+  --axiom-text-muted: #475569;
+  --axiom-text-dim: #94a3b8;
+  --axiom-text-subtle: #e8edf3;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0b132b;
+  font-family: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Axiom Utility classes */
+.bg-axiom-navy {
+  background-color: var(--axiom-navy);
+}
+
+.bg-axiom-navy-sub {
+  background-color: var(--axiom-navy-sub);
+}
+
+.bg-axiom-amber {
+  background-color: var(--axiom-amber);
+}
+
+.bg-axiom-amber-hover:hover {
+  background-color: var(--axiom-amber-hover);
+}
+
+.bg-axiom-slate {
+  background-color: var(--axiom-slate-bg);
+}
+
+.text-axiom-navy {
+  color: var(--axiom-navy);
+}
+
+.text-axiom-amber {
+  color: var(--axiom-amber);
+}
+
+.text-axiom-muted {
+  color: var(--axiom-text-muted);
+}
+
+.text-axiom-dim {
+  color: var(--axiom-text-dim);
+}
+
+.border-axiom-light {
+  border-color: var(--axiom-border-light);
+}
+
+.border-axiom-dark {
+  border-color: var(--axiom-border-dark);
+}
+
+.border-axiom-amber {
+  border-color: var(--axiom-amber);
+}
+
+/* Modal and card shadows */
+.shadow-axiom-modal {
+  box-shadow: 0px 18px 20px rgba(11, 19, 43, 0.15);
+}
+
+.shadow-axiom-card {
+  box-shadow: 0 1px 3px 0 rgba(11, 19, 43, 0.08), 0 1px 2px -1px rgba(11, 19, 43, 0.08);
+}

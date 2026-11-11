@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, Mail, ArrowRight, Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
-import { api } from '@/lib/api';
+import { authService } from '@/services';
+import { authStorage } from '@/lib/auth-storage';
+import { getApiErrorMessage } from '@/lib/error-handler';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -14,8 +16,7 @@ export default function AdminLoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    // If already logged in, go directly to dashboard
-    const token = localStorage.getItem('axiom_admin_token');
+    const token = authStorage.getToken();
     if (token) {
       router.push('/admin/dashboard');
     }
@@ -27,21 +28,17 @@ export default function AdminLoginPage() {
     setErrorMsg('');
 
     try {
-      const res = await api.post('/auth/login', {
-        email,
-        password,
-      });
+      const res = await authService.login({ email, password });
 
-      if (res.data.success && res.data.access_token) {
-        localStorage.setItem('axiom_admin_token', res.data.access_token);
-        localStorage.setItem('axiom_admin_user', JSON.stringify(res.data.user));
+      if (res.success && res.access_token) {
+        authStorage.setToken(res.access_token);
+        authStorage.setUser(res.user);
         router.push('/admin/dashboard');
       } else {
-        setErrorMsg(res.data.message || 'Đăng nhập không thành công.');
+        setErrorMsg(res.message || 'Đăng nhập không thành công.');
       }
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      setErrorMsg(error.response?.data?.message || 'Email hoặc mật khẩu không chính xác.');
+    } catch (err) {
+      setErrorMsg(getApiErrorMessage(err, 'Email hoặc mật khẩu không chính xác.'));
     } finally {
       setLoading(false);
     }
@@ -82,9 +79,7 @@ export default function AdminLoginPage() {
         {/* Login Box */}
         <div className="bg-white rounded-[8px] p-8 shadow-2xl border border-[#dce2ea] flex flex-col gap-5">
           <div className="flex flex-col gap-1 border-b border-[#dce2ea] pb-4">
-            <h1 className="text-[20px] font-bold text-[#0b132b]">
-              Đăng nhập Quản trị
-            </h1>
+            <h1 className="text-[20px] font-bold text-[#0b132b]">Đăng nhập Quản trị</h1>
             <span className="text-[12px] text-[#475569]">
               Xác thực bảo mật phiên làm việc qua JWT Token
             </span>
@@ -99,9 +94,7 @@ export default function AdminLoginPage() {
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-[#0b132b]">
-                Email Quản trị
-              </label>
+              <label className="text-[12px] font-semibold text-[#0b132b]">Email Quản trị</label>
               <div className="relative flex items-center">
                 <Mail className="w-4 h-4 text-[#94a3b8] absolute left-3 pointer-events-none" />
                 <input
@@ -116,9 +109,7 @@ export default function AdminLoginPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-semibold text-[#0b132b]">
-                Mật khẩu
-              </label>
+              <label className="text-[12px] font-semibold text-[#0b132b]">Mật khẩu</label>
               <div className="relative flex items-center">
                 <Lock className="w-4 h-4 text-[#94a3b8] absolute left-3 pointer-events-none" />
                 <input
@@ -132,11 +123,15 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Default hint for user */}
+            {/* Default hint */}
             <div className="bg-[#f8fafc] border border-[#dce2ea] p-2.5 rounded-[4px] text-[11px] text-[#475569] flex flex-col gap-0.5">
               <span className="font-semibold text-[#0b132b]">Tài khoản mặc định:</span>
-              <span>Email: <code className="font-mono text-[#0b132b]">admin@axiom.vn</code></span>
-              <span>Mật khẩu: <code className="font-mono text-[#0b132b]">Password@123</code></span>
+              <span>
+                Email: <code className="font-mono text-[#0b132b]">admin@axiom.vn</code>
+              </span>
+              <span>
+                Mật khẩu: <code className="font-mono text-[#0b132b]">Password@123</code>
+              </span>
             </div>
 
             <button

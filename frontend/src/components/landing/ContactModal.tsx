@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ArrowUpRight, Loader2, CheckCircle2 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { quoteService } from '@/services';
+import { getApiErrorMessage } from '@/lib/error-handler';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -24,6 +25,17 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Sync initialSku whenever the modal opens or initialSku prop changes
+  useEffect(() => {
+    if (isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        sku_target: initialSku || prev.sku_target,
+      }));
+      setErrorMsg('');
+    }
+  }, [isOpen, initialSku]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +49,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
     setErrorMsg('');
 
     try {
-      await api.post('/quote-requests', {
+      await quoteService.submitQuoteRequest({
         full_name: formData.full_name,
         company_name: formData.company_name,
         phone: formData.phone,
@@ -52,8 +64,8 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
         setSuccess(false);
         onClose();
       }, 2500);
-    } catch {
-      setErrorMsg('Lỗi gửi dữ liệu. Vui lòng kiểm tra lại.');
+    } catch (err) {
+      setErrorMsg(getApiErrorMessage(err, 'Lỗi gửi dữ liệu. Vui lòng kiểm tra lại.'));
     } finally {
       setLoading(false);
     }
@@ -82,7 +94,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-[4px] bg-[#f8fafc] border border-[#dce2ea] hover:bg-[#dce2ea] text-[#0b132b] flex items-center justify-center transition-colors shrink-0"
+            className="w-9 h-9 rounded-[4px] bg-[#f8fafc] border border-[#dce2ea] hover:bg-[#dce2ea] text-[#0b132b] flex items-center justify-center transition-colors shrink-0 cursor-pointer"
             aria-label="Đóng modal"
           >
             <X className="w-4 h-4" />

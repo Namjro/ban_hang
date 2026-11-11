@@ -70,6 +70,27 @@ npm run dev
 
 ---
 
+## 🏛️ Quy Định Kiến Trúc Hệ Thống (Production Architecture Standards)
+
+### 1. Kiến Trúc Backend Laravel 12 (`FormRequest → Controller → Service → Resource`)
+Hệ thống Backend tuân thủ nghiêm ngặt mô hình phân tầng 4 lớp:
+- **`FormRequest`** (`backend/app/Http/Requests/`): Xác thực và lọc tham số đầu vào (kế thừa `BaseFormRequest`).
+- **`Controller`** (`backend/app/Http/Controllers/Api/`): Điều phối mỏng, không chứa truy vấn Eloquent trực tiếp.
+- **`Service`** (`backend/app/Services/`): Chứa toàn bộ nghiệp vụ, query DB, tính toán và xử lý file.
+- **`API Resource`** (`backend/app/Http/Resources/`): Chuẩn hóa dữ liệu JSON đầu ra.
+- 📄 Xem chi tiết: [`backend/BACKEND_CODING_GUIDELINES.md`](./backend/BACKEND_CODING_GUIDELINES.md)
+
+### 2. Kiến Trúc Frontend Next.js 15 (`Page → Feature Component → Hook/Util → Typed Service → Axios Client`)
+Hệ thống Frontend tuân thủ nghiêm ngặt mô hình phân tầng Production 5 lớp:
+- **`Page / Route Container`** (`frontend/src/app/`): Điều phối route, đồng bộ URL Query Params (`<Suspense>`), Error/404 boundaries.
+- **`Feature Components`** (`frontend/src/components/`): Tách biệt rõ `landing/`, `products/`, `admin/` (mỗi file < 350 dòng).
+- **`Custom Hooks & Utilities`** (`frontend/src/hooks/`, `frontend/src/lib/`, `frontend/src/constants/`): Debounce tìm kiếm (`useDebounce`), quản lý JWT an toàn SSR (`authStorage`), chuẩn hóa lỗi (`getApiErrorMessage`).
+- **`Typed API Services`** (`frontend/src/services/*.service.ts`): Đóng gói 100% lệnh gọi HTTP với kiểu dữ liệu TypeScript chặt chẽ.
+- 📄 Xem chi tiết: [`frontend/FRONTEND_CODING_GUIDELINES.md`](./frontend/FRONTEND_CODING_GUIDELINES.md)
+- 🤖 Xem chỉ thị chung cho AI Agent: [`AGENTS.md`](./AGENTS.md)
+
+---
+
 ## 📐 Hệ Thống Thiết Kế (Axiom Design System)
 
 Toàn bộ quy chuẩn token thiết kế theo chuẩn Google Labs Code được định nghĩa tại file:

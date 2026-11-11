@@ -11,64 +11,53 @@ import {
   Loader2,
   Trash2,
   Eye,
-  X,
 } from 'lucide-react';
-import { api } from '@/lib/api';
-import { QuoteRequest } from '@/lib/types';
+import { quoteService } from '@/services';
+import { QuoteRequest, UpdateQuoteStatusPayload } from '@/lib/types';
+import { getApiErrorMessage } from '@/lib/error-handler';
+import { useDebounce } from '@/hooks/useDebounce';
+import QuoteDetailModal from '@/components/admin/QuoteDetailModal';
 
 export default function AdminQuotesPage() {
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
   const [updating, setUpdating] = useState(false);
-  const [statusInput, setStatusInput] = useState('');
-  const [notesInput, setNotesInput] = useState('');
 
   const fetchQuotes = useCallback(async () => {
     setLoading(true);
     try {
-      const params: Record<string, string> = {};
-      if (statusFilter) params.status = statusFilter;
-      if (searchTerm) params.search = searchTerm;
-
-      const res = await api.get('/admin/quotes', { params });
-      if (res.data.success) {
-        setQuotes(res.data.data);
+      const res = await quoteService.getAdminQuotes({
+        status: statusFilter || undefined,
+        search: debouncedSearchTerm || undefined,
+      });
+      if (res.success) {
+        setQuotes(res.data);
       }
     } catch (err) {
       console.error('Failed to load quotes', err);
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, searchTerm]);
+  }, [statusFilter, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchQuotes();
   }, [fetchQuotes]);
 
-  const handleOpenDetail = (quote: QuoteRequest) => {
-    setSelectedQuote(quote);
-    setStatusInput(quote.status);
-    setNotesInput(quote.admin_notes || '');
-  };
-
-  const handleUpdateStatus = async () => {
-    if (!selectedQuote) return;
+  const handleUpdateStatus = async (id: number, payload: UpdateQuoteStatusPayload) => {
     setUpdating(true);
     try {
-      const res = await api.patch(`/admin/quotes/${selectedQuote.id}/status`, {
-        status: statusInput,
-        admin_notes: notesInput,
-      });
-      if (res.data.success) {
-        setSelectedQuote(res.data.data);
+      const res = await quoteService.updateQuoteStatus(id, payload);
+      if (res.success) {
+        setSelectedQuote(res.data);
         fetchQuotes();
       }
     } catch (err) {
-      console.error('Failed to update quote status', err);
-      alert('Lỗi cập nhật trạng thái.');
+      alert(getApiErrorMessage(err, 'Lỗi cập nhật trạng thái.'));
     } finally {
       setUpdating(false);
     }
@@ -77,13 +66,13 @@ export default function AdminQuotesPage() {
   const handleDeleteQuote = async (id: number) => {
     if (!confirm('Bạn có chắc chắn muốn xóa yêu cầu báo giá này?')) return;
     try {
-      await api.delete(`/admin/quotes/${id}`);
+      await quoteService.deleteQuote(id);
       if (selectedQuote?.id === id) {
         setSelectedQuote(null);
       }
       fetchQuotes();
     } catch (err) {
-      console.error('Failed to delete quote', err);
+      alert(getApiErrorMessage(err, 'Lỗi khi xóa yêu cầu báo giá.'));
     }
   };
 
@@ -214,15 +203,15 @@ export default function AdminQuotesPage() {
                     <td className="py-3 px-5 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
-                          onClick={() => handleOpenDetail(q)}
-                          className="p-1.5 text-[#0b132b] hover:bg-[#dce2ea] rounded-[4px] transition-colors"
+                          onClick={() => setSelectedQuote(q)}
+                          className="p-1.5 text-[#0b132b] hover:bg-[#dce2ea] rounded-[4px] transition-colors cursor-pointer"
                           title="Xem chi tiết & Xử lý"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteQuote(q.id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-[4px] transition-colors"
+                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-[4px] transition-colors cursor-pointer"
                           title="Xóa yêu cầu"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -238,114 +227,12 @@ export default function AdminQuotesPage() {
       </div>
 
       {/* Quote Detail Modal */}
-      {selectedQuote && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b132b]/60 backdrop-blur-[2px]">
-          <div className="bg-white border border-[#dce2ea] rounded-[8px] w-full max-w-[580px] p-6 shadow-2xl flex flex-col gap-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-[#dce2ea] pb-3">
-              <div className="flex flex-col">
-                <span className="text-[11px] font-semibold text-[#94a3b8] uppercase">
-                  YÊU CẦU BÁO GIÁ #{selectedQuote.id}
-                </span>
-                <h3 className="text-[18px] font-bold text-[#0b132b]">
-                  {selectedQuote.full_name}
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedQuote(null)}
-                className="p-1 rounded-[4px] hover:bg-[#f8fafc] text-[#475569]"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Content Details */}
-            <div className="grid grid-cols-2 gap-4 text-[13px] bg-[#f8fafc] p-4 rounded-[6px] border border-[#dce2ea]">
-              <div>
-                <span className="text-[#94a3b8] text-[11px] block">Số điện thoại:</span>
-                <span className="font-mono font-bold text-[#0b132b]">{selectedQuote.phone}</span>
-              </div>
-              <div>
-                <span className="text-[#94a3b8] text-[11px] block">Email:</span>
-                <span className="text-[#0b132b]">{selectedQuote.email || 'Không có'}</span>
-              </div>
-              <div>
-                <span className="text-[#94a3b8] text-[11px] block">Công ty:</span>
-                <span className="text-[#0b132b]">{selectedQuote.company_name || 'Khách cá nhân / Chưa rõ'}</span>
-              </div>
-              <div>
-                <span className="text-[#94a3b8] text-[11px] block">Nguồn tiếp nhận:</span>
-                <span className="text-[#0b132b] font-medium">
-                  {selectedQuote.source === 'landing_form' ? 'Landing Form' : 'Modal Liên Hệ'}
-                </span>
-              </div>
-              <div className="col-span-2">
-                <span className="text-[#94a3b8] text-[11px] block">Mã SKU / Thông số quan tâm:</span>
-                <span className="font-mono font-bold text-[#0b132b] bg-white px-2 py-1 rounded-[4px] border border-[#dce2ea] inline-block mt-0.5">
-                  {selectedQuote.sku_target || 'Không nhập mã SKU'}
-                </span>
-              </div>
-              <div className="col-span-2">
-                <span className="text-[#94a3b8] text-[11px] block">Nội dung yêu cầu từ khách:</span>
-                <p className="text-[#0b132b] bg-white p-2.5 rounded-[4px] border border-[#dce2ea] mt-0.5 whitespace-pre-wrap">
-                  {selectedQuote.requirement_content || 'Không có mô tả chi tiết'}
-                </p>
-              </div>
-            </div>
-
-            {/* Action / Status Update */}
-            <div className="flex flex-col gap-3 border-t border-[#dce2ea] pt-3">
-              <span className="text-[13px] font-bold text-[#0b132b]">
-                Cập Nhật Tiến Độ Xử Lý
-              </span>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] text-[#475569]">Chuyển trạng thái:</label>
-                <select
-                  value={statusInput}
-                  onChange={(e) => setStatusInput(e.target.value)}
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] p-2 text-[13px] text-[#0b132b] focus:outline-none"
-                >
-                  <option value="new">Mới nhận (Chờ xử lý)</option>
-                  <option value="contacted">Đã liên hệ điện thoại / Zalo</option>
-                  <option value="quoted">Đã gửi bảng báo giá kỹ thuật</option>
-                  <option value="completed">Đã chốt hợp đồng / Hoàn tất</option>
-                  <option value="cancelled">Hủy yêu cầu</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[12px] text-[#475569]">Ghi chú nội bộ admin:</label>
-                <textarea
-                  rows={2}
-                  value={notesInput}
-                  onChange={(e) => setNotesInput(e.target.value)}
-                  placeholder="Ghi chú nhân viên báo giá, thời hạn giao hàng cam kết, chiết khấu..."
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] p-2 text-[13px] text-[#0b132b] focus:outline-none resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedQuote(null)}
-                  className="px-4 py-2 border border-[#dce2ea] text-[#475569] hover:bg-[#f8fafc] rounded-[4px] text-[13px]"
-                >
-                  Đóng
-                </button>
-                <button
-                  type="button"
-                  disabled={updating}
-                  onClick={handleUpdateStatus}
-                  className="px-4 py-2 bg-[#0b132b] hover:bg-[#152039] text-white rounded-[4px] text-[13px] font-medium flex items-center gap-1.5"
-                >
-                  {updating && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>Lưu Thay Đổi</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <QuoteDetailModal
+        quote={selectedQuote}
+        updating={updating}
+        onClose={() => setSelectedQuote(null)}
+        onUpdateStatus={handleUpdateStatus}
+      />
     </div>
   );
 }

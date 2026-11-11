@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   FolderTree,
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { authService } from '@/services';
+import { authStorage } from '@/lib/auth-storage';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,32 +24,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     setMounted(true);
-    const token = localStorage.getItem('axiom_admin_token');
+    const token = authStorage.getToken();
     const isLoginPage = pathname === '/admin/login';
 
     if (!token && !isLoginPage) {
       router.push('/admin/login');
     } else if (token) {
-      const userStr = localStorage.getItem('axiom_admin_user');
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          setUserName(user.name || 'Administrator');
-        } catch {}
+      const user = authStorage.getUser();
+      if (user?.name) {
+        setUserName(user.name);
       }
     }
   }, [pathname, router]);
 
   const handleLogout = async () => {
     try {
-      await api.post('/auth/logout');
-    } catch {}
-    localStorage.removeItem('axiom_admin_token');
-    localStorage.removeItem('axiom_admin_user');
+      await authService.logout();
+    } catch {
+      // Ignore network/token expiration errors on logout
+    }
+    authStorage.clear();
     router.push('/admin/login');
   };
 
-  // If on login page, render children directly without admin layout chrome
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
@@ -173,10 +171,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {pathname === '/admin/dashboard'
                 ? 'Tổng Quan'
                 : pathname === '/admin/quotes'
-                ? 'Yêu Cầu Báo Giá'
-                : pathname === '/admin/categories'
-                ? 'Quản Lý Danh Mục'
-                : 'Quản Lý Sản Phẩm'}
+                  ? 'Yêu Cầu Báo Giá'
+                  : pathname === '/admin/categories'
+                    ? 'Quản Lý Danh Mục'
+                    : 'Quản Lý Sản Phẩm'}
             </span>
           </div>
 
@@ -188,9 +186,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Page Body */}
-        <main className="p-8 flex-1">
-          {children}
-        </main>
+        <main className="p-8 flex-1">{children}</main>
       </div>
     </div>
   );

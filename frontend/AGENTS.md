@@ -1,9 +1,16 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# AGENTS.md — Frontend AI Coding Rules (`frontend/`)
 
-## This is NOT the Next.js you know
+When working inside `frontend/`, you MUST follow the 5-layer Production Next.js Architecture defined in [`FRONTEND_CODING_GUIDELINES.md`](./FRONTEND_CODING_GUIDELINES.md):
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+`Page / Route Container → Feature Component → Custom Hook / Utils → Typed API Service → Axios Client`
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+## Non-Negotiable Rules
+1. **No Direct Axios Calls in Pages/Components**: Never import `api` from `@/lib/api` inside `src/app/**` or `src/components/**`. Always call typed methods in `src/services/*.service.ts`.
+2. **Modular Feature Components**: Keep page and component files concise (< 350 lines). Extract modals, filter sidebars, galleries, and tabs into `src/components/products/` or `src/components/admin/`.
+3. **Centralized Auth & Error Handling**:
+   - Always use `authStorage` (`@/lib/auth-storage`) instead of raw `localStorage`.
+   - Always use `getApiErrorMessage(err, fallback)` (`@/lib/error-handler`) with `catch (err: unknown)` instead of `catch (err: any)`.
+4. **Search Debouncing & URL Sync**:
+   - Always debounce live search inputs with `useDebounce(search, 300)` (`@/hooks/useDebounce`).
+   - Keep catalog filters synced with URL query parameters (`useSearchParams` wrapped in `<Suspense>`).
+5. **Verification**: Always run `Push-Location frontend; npx tsc --noEmit; npm run lint; Pop-Location` after making changes.

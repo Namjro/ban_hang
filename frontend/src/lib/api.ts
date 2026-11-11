@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { authStorage } from './auth-storage';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -10,13 +11,11 @@ export const api = axios.create({
   },
 });
 
-// Attach JWT Bearer Token if available in localStorage
+// Attach JWT Bearer Token if available in authStorage
 api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('axiom_admin_token');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  const token = authStorage.getToken();
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -28,9 +27,9 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const isAuthRoute = window.location.pathname.startsWith('/admin/login');
       if (!isAuthRoute && window.location.pathname.startsWith('/admin')) {
-        localStorage.removeItem('axiom_admin_token');
-        localStorage.removeItem('axiom_admin_user');
-        window.location.href = '/admin/login?expired=1';
+        authStorage.clear();
+        const loginUrl = '/admin/login?expired=1';
+        window.location.replace(loginUrl);
       }
     }
     return Promise.reject(error);

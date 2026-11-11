@@ -3,32 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Http\Resources\CategoryResource;
+use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
+    public function __construct(
+        protected CategoryService $categoryService
+    ) {}
+
     public function index(): JsonResponse
     {
-        $categories = Category::withCount('products')
-            ->orderBy('order', 'asc')
-            ->get();
+        $categories = $this->categoryService->getPublicCategories();
 
         return response()->json([
             'success' => true,
-            'data' => $categories
+            'data'    => CategoryResource::collection($categories),
         ]);
     }
 
     public function show(string $slug): JsonResponse
     {
-        $category = Category::where('slug', $slug)
-            ->with(['products'])
-            ->firstOrFail();
+        $category = $this->categoryService->getPublicCategoryBySlug($slug);
 
         return response()->json([
             'success' => true,
-            'data' => $category
+            'data'    => new CategoryResource($category),
         ]);
     }
 }

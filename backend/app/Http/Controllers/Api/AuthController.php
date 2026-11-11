@@ -3,40 +3,35 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        protected AuthService $authService
+    ) {}
+
     /**
      * Get a JWT via given credentials.
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dữ liệu đăng nhập không hợp lệ.',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         $credentials = $request->only('email', 'password');
 
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (!$token = $this->authService->attemptLogin($credentials)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email hoặc mật khẩu không chính xác.'
+                'message' => 'Email hoặc mật khẩu không chính xác.',
             ], 401);
         }
 
-        return $this->respondWithToken($token);
+        return response()->json(array_merge(
+            ['success' => true],
+            $this->authService->buildTokenPayload($token)
+        ));
     }
 
     /**
@@ -44,9 +39,11 @@ class AuthController extends Controller
      */
     public function me(): JsonResponse
     {
+        $user = $this->authService->getCurrentUser();
+
         return response()->json([
             'success' => true,
-            'user' => auth('api')->user()
+            'user'    => $user ? new UserResource($user) : null,
         ]);
     }
 
@@ -55,11 +52,11 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        auth('api')->logout();
+        $this->authService->logout();
 
         return response()->json([
             'success' => true,
-            'message' => 'Đăng xuất thành công.'
+            'message' => 'Đăng xuất thành công.',
         ]);
     }
 
@@ -68,27 +65,11 @@ class AuthController extends Controller
      */
     public function refresh(): JsonResponse
     {
-        return $this->respondWithToken(auth('api')->refresh());
-    }
+        $token = $this->authService->refreshToken();
 
-    /**
-     * Get the token array structure.
-     */
-    protected function respondWithToken(string $token): JsonResponse
-    {
-        $user = auth('api')->user();
-
-        return response()->json([
-            'success' => true,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role ?? 'admin',
-            ]
-        ]);
+        return response()->json(array_merge(
+            ['success' => true],
+            $this->authService->buildTokenPayload($token)
+        ));
     }
 }

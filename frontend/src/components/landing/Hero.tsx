@@ -6,10 +6,10 @@ import Image from 'next/image';
 import { ShieldCheck, PackageCheck, Download, ArrowRight, Crosshair } from 'lucide-react';
 
 interface HeroProps {
-  onOpenQuoteModal: () => void;
+  onOpenQuoteModal?: () => void;
 }
 
-export default function Hero({ onOpenQuoteModal }: HeroProps) {
+export default function Hero({}: HeroProps) {
   const handleDownloadCatalogue = () => {
     alert('Đang tải danh mục AXIOM Industrial Catalogue 2026 (PDF 18.5MB)...');
   };

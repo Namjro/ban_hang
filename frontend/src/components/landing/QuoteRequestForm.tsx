@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { Check, Phone, MessageSquare, ArrowUpRight, Lock, Loader2, CheckCircle2 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { quoteService } from '@/services';
+import { getApiErrorMessage } from '@/lib/error-handler';
+import { COMPANY_INFO } from '@/constants';
 
 export default function QuoteRequestForm() {
   const [formData, setFormData] = useState({
@@ -28,7 +30,7 @@ export default function QuoteRequestForm() {
     setErrorMsg('');
 
     try {
-      await api.post('/quote-requests', {
+      await quoteService.submitQuoteRequest({
         full_name: formData.full_name,
         phone: formData.phone,
         company_name: formData.company_name,
@@ -45,8 +47,10 @@ export default function QuoteRequestForm() {
         sku_target: '',
         requirement_content: '',
       });
-    } catch {
-      setErrorMsg('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại hoặc gọi Hotline.');
+    } catch (err) {
+      setErrorMsg(
+        getApiErrorMessage(err, 'Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại hoặc gọi Hotline.')
+      );
     } finally {
       setLoading(false);
     }
@@ -89,14 +93,14 @@ export default function QuoteRequestForm() {
             <span className="text-[#94a3b8] text-[12px]">Muốn trao đổi trực tiếp?</span>
             <div className="flex flex-wrap gap-3">
               <a
-                href="tel:0988123456"
+                href={COMPANY_INFO.hotlineTel}
                 className="border border-[#475569] hover:border-[#f59e0b] px-3.5 py-2.5 rounded-[4px] flex items-center gap-2 text-white text-[12px] font-medium transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#f59e0b]" />
-                <span>Hotline: 0988.123.456</span>
+                <span>Hotline: {COMPANY_INFO.hotlineDisplay}</span>
               </a>
               <a
-                href="https://zalo.me"
+                href={COMPANY_INFO.zaloUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="border border-[#475569] hover:border-[#f59e0b] px-3.5 py-2.5 rounded-[4px] flex items-center gap-2 text-white text-[12px] font-medium transition-colors"
@@ -131,7 +135,7 @@ export default function QuoteRequestForm() {
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-2 text-[13px] text-emerald-800 underline font-medium hover:text-emerald-900"
+                className="mt-2 text-[13px] text-emerald-800 underline font-medium hover:text-emerald-900 cursor-pointer"
               >
                 Gửi thêm yêu cầu khác
               </button>

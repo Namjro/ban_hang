@@ -11,7 +11,7 @@ import {
   Loader2,
   RefreshCw,
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { dashboardService } from '@/services';
 import { AdminStats } from '@/lib/types';
 
 export default function AdminDashboardPage() {
@@ -21,9 +21,9 @@ export default function AdminDashboardPage() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/admin/dashboard/stats');
-      if (res.data.success) {
-        setStats(res.data.data);
+      const res = await dashboardService.getStats();
+      if (res.success) {
+        setStats(res.data);
       }
     } catch (err) {
       console.error('Error fetching dashboard stats', err);
@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
             href="/admin/products"
             className="text-[12px] text-[#0b132b] hover:text-[#f59e0b] font-medium flex items-center gap-1 transition-colors"
           >
-            <span>Quản lý 6 danh mục</span>
+            <span>Quản lý {overview.total_categories} danh mục</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -167,14 +167,17 @@ export default function AdminDashboardPage() {
           <div className="flex items-baseline gap-2">
             <span className="text-[32px] font-bold text-[#0b132b]">
               {overview.total_quotes > 0
-                ? Math.round(((overview.quoted_quotes + overview.completed_quotes) / overview.total_quotes) * 100)
-                : 100}%
+                ? Math.round(
+                    ((overview.quoted_quotes + overview.completed_quotes) /
+                      overview.total_quotes) *
+                      100
+                  )
+                : 100}
+              %
             </span>
             <span className="text-[12px] text-emerald-700">tỷ lệ phản hồi</span>
           </div>
-          <span className="text-[12px] text-[#475569]">
-            Chuẩn cam kết trong 2h
-          </span>
+          <span className="text-[12px] text-[#475569]">Chuẩn cam kết trong 2h</span>
         </div>
       </div>
 
@@ -218,7 +221,9 @@ export default function AdminDashboardPage() {
                     <td className="py-3 px-5 font-semibold text-[#0b132b]">
                       <div>{q.full_name}</div>
                       {q.company_name && (
-                        <div className="text-[11px] text-[#475569] font-normal">{q.company_name}</div>
+                        <div className="text-[11px] text-[#475569] font-normal">
+                          {q.company_name}
+                        </div>
                       )}
                     </td>
                     <td className="py-3 px-5 font-mono text-[#0b132b]">{q.phone}</td>

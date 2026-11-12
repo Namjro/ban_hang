@@ -19,6 +19,7 @@ import {
 import { Category, Product, ProductPayload, StockStatus } from '@/lib/types';
 import { PRESET_CERTIFICATES, SAMPLE_PRODUCT_IMAGES } from '@/constants';
 import { productService } from '@/services';
+import { useToast } from '@/components/ui/Toast';
 
 interface SpecRow {
   key: string;
@@ -42,6 +43,7 @@ export default function ProductFormModal({
   onClose,
   onSave,
 }: ProductFormModalProps) {
+  const toast = useToast();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
@@ -127,7 +129,7 @@ export default function ProductFormModal({
   const handleUploadFiles = async (files: FileList | File[]) => {
     const fileArray = Array.from(files).filter((file) => file.type.startsWith('image/'));
     if (fileArray.length === 0) {
-      alert('Vui lòng chọn tệp định dạng hình ảnh (PNG, JPG, JPEG, WEBP, GIF, SVG).');
+      toast.warning('Vui lòng chọn tệp định dạng hình ảnh (PNG, JPG, JPEG, WEBP, GIF, SVG).');
       return;
     }
 
@@ -267,7 +269,7 @@ export default function ProductFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.sku || !form.name) {
-      alert('Vui lòng nhập đầy đủ mã SKU và tên sản phẩm.');
+      toast.warning('Vui lòng nhập đầy đủ mã SKU và tên sản phẩm.');
       return;
     }
 

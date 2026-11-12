@@ -15,8 +15,8 @@ colors:
   text-primary: "#0b132b"
   text-inverted: "#ffffff"
   text-muted: "#475569"
-  text-dim: "#94a3b8"
-  text-subtle: "#e8edf3"
+  text-dim: "#64748b"
+  text-subtle: "#e2e8f0"
   status-success: "#10b981"
   status-warning: "#f59e0b"
   status-danger: "#ef4444"
@@ -51,9 +51,9 @@ typography:
     fontSize: 0.75rem
     lineHeight: 1.5
   overline:
-    fontSize: 0.6875rem
+    fontSize: 0.75rem
     fontWeight: 600
-    letterSpacing: 0.1em
+    letterSpacing: 0.08em
     textTransform: uppercase
 rounded:
   xs: 2px

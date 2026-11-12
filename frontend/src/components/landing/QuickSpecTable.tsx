@@ -1,13 +1,17 @@
 'use client';
 
 import React from 'react';
-import { FileText, FileDown } from 'lucide-react';
+import Link from 'next/link';
+import { FileText, FileDown, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { useToast } from '@/components/ui/Toast';
 
 interface QuickSpecTableProps {
   onOpenQuoteModal?: () => void;
 }
 
 export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps) {
+  const toast = useToast();
+
   const specs = [
     {
       sku: 'AX-WH-100',
@@ -53,90 +57,82 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
     },
   ];
 
-  const handleDownloadSpec = (sku: string) => {
-    alert(`Đang tải tài liệu thông số kỹ thuật Spec Sheet cho mã [${sku}] (PDF)...`);
+  const handleRequestSpecSheet = (sku: string) => {
+    toast.info(
+      `Tài liệu Spec Sheet cho mã ${sku} được gửi kèm báo giá kỹ thuật. Vui lòng để lại email để nhận bản PDF chính thức.`,
+      'Yêu cầu Spec Sheet'
+    );
+    onOpenQuoteModal?.();
   };
 
   return (
-    <section id="quick-specs" className="bg-[#f8fafc] py-16 lg:py-[80px] border-b border-[#dce2ea]">
+    <section id="quick-specs" className="bg-canvas py-16 lg:py-24 border-b border-line">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] flex flex-col gap-7">
         {/* Specification Introduction */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="flex flex-col gap-2.5">
-            <span className="text-[#475569] text-[11px] font-semibold tracking-[1.6px] uppercase">
+            <span className="text-ink-muted text-[12px] font-semibold tracking-[1.4px] uppercase">
               02 / TÀI LIỆU KỸ THUẬT THAM KHẢO
             </span>
-            <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0b132b] tracking-[-1.3px]">
+            <h2 className="text-[28px] sm:text-[36px] font-bold text-ink tracking-[-0.03em]">
               Ít tra cứu hơn. Chắc chắn hơn.
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto bg-white border border-[#dce2ea] px-3 py-1.5 rounded-[4px] shadow-2xs">
-            <FileText className="w-4 h-4 text-[#475569]" />
-            <span className="text-[12px] text-[#475569] font-medium">
+          <div className="flex items-center gap-2 self-start sm:self-auto bg-surface border border-line px-3 py-2 rounded-[4px] shadow-axiom-card">
+            <FileText className="w-4 h-4 text-ink-muted" aria-hidden="true" />
+            <span className="text-[12px] text-ink-muted font-medium">
               Bảng Thông Số Nhanh / Danh mục mẫu
             </span>
           </div>
         </div>
 
         {/* Specification Comparison Table */}
-        <div className="border border-[#dce2ea] rounded-[8px] overflow-hidden bg-white shadow-xs overflow-x-auto">
+        <div className="border border-line rounded-[8px] overflow-hidden bg-surface shadow-axiom-card overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
-              <tr className="bg-[#0b132b] text-white text-[11px] font-semibold tracking-[0.6px] uppercase">
+              <tr className="bg-navy-900 text-white text-[12px] font-semibold tracking-[0.5px] uppercase">
                 <th className="py-4 px-6 w-[180px]">MÃ SKU</th>
                 <th className="py-4 px-6">Danh Mục</th>
                 <th className="py-4 px-6 w-[320px]">Kích Thước / Thông Số</th>
                 <th className="py-4 px-6 w-[160px]">Thương Hiệu</th>
-                <th className="py-4 px-6 w-[70px] text-center">PDF</th>
+                <th className="py-4 px-6 w-[90px] text-center">Tài Liệu</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#dce2ea]">
+            <tbody className="divide-y divide-line">
               {specs.map((row, idx) => (
-                <tr
-                  key={idx}
-                  className="hover:bg-[#f8fafc] transition-colors text-[13px]"
-                >
-                  <td className="py-4 px-6 font-semibold text-[#0b132b] font-mono">
-                    <a
+                <tr key={idx} className="hover:bg-canvas transition-colors text-[13px]">
+                  <td className="py-4 px-6 font-semibold text-ink font-mono">
+                    <Link
                       href={`/products/${row.sku}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-[#d97706] transition-colors inline-flex items-center gap-1 group/link"
-                      title="Mở trang chi tiết sản phẩm ở tab mới"
+                      className="hover:text-amber-600 transition-colors inline-flex items-center gap-1"
                     >
                       <span>{row.sku}</span>
-                      <span className="text-[10px] text-[#94a3b8] group-hover/link:text-[#d97706]">↗</span>
-                    </a>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-ink-dim" aria-hidden="true" />
+                    </Link>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex flex-col">
-                      <a
+                      <Link
                         href={`/products/${row.sku}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-semibold text-[#0b132b] hover:text-[#d97706] text-[14px] transition-colors"
+                        className="font-semibold text-ink hover:text-amber-600 text-[14px] transition-colors"
                       >
                         {row.category}
-                      </a>
-                      <span className="text-[#475569] text-[11px]">
-                        {row.group}
-                      </span>
+                      </Link>
+                      <span className="text-ink-muted text-[12px]">{row.group}</span>
                     </div>
                   </td>
-                  <td className="py-4 px-6 text-[#475569] leading-relaxed">
-                    {row.dimensions}
-                  </td>
-                  <td className="py-4 px-6 font-semibold text-[#0b132b]">
-                    {row.brand}
-                  </td>
+                  <td className="py-4 px-6 text-ink-muted leading-relaxed">{row.dimensions}</td>
+                  <td className="py-4 px-6 font-semibold text-ink">{row.brand}</td>
                   <td className="py-4 px-6 text-center">
                     <button
-                      onClick={() => handleDownloadSpec(row.sku)}
-                      title={`Tải Spec Sheet ${row.sku}`}
-                      className="p-1.5 hover:bg-[#dce2ea] rounded-[4px] text-[#0b132b] transition-colors inline-flex items-center justify-center"
+                      type="button"
+                      onClick={() => handleRequestSpecSheet(row.sku)}
+                      aria-label={`Nhận Spec Sheet cho ${row.sku}`}
+                      title={`Nhận Spec Sheet ${row.sku}`}
+                      className="min-w-[44px] min-h-[44px] hover:bg-line/50 rounded-[4px] text-ink transition-colors inline-flex items-center justify-center cursor-pointer"
                     >
-                      <FileDown className="w-5 h-5 text-[#0b132b]" />
+                      <FileDown className="w-5 h-5 text-ink" aria-hidden="true" />
                     </button>
                   </td>
                 </tr>
@@ -145,19 +141,20 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
           </table>
         </div>
 
-        {/* Technical Disclaimer (Figma Node 3:2724) */}
-        <p className="text-[#475569] text-[12px] leading-[1.6]">
+        {/* Technical Disclaimer */}
+        <p className="text-ink-muted text-[12px] leading-[1.6]">
           Mã SKU và kích thước chỉ mang tính minh họa—không phải thông số kỹ thuật đã được nhà sản xuất xác nhận. Vui lòng xác nhận model, kích thước và tài liệu kỹ thuật chính thức với bộ phận kỹ thuật của chúng tôi trước khi đặt hàng.
         </p>
 
-        {/* Sourcing assistance / Action (Figma Node 1:2 & 1:4) */}
+        {/* Action */}
         <div className="flex items-center justify-end w-full pt-1">
           <button
+            type="button"
             onClick={onOpenQuoteModal}
-            className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#0b132b] hover:text-[#f59e0b] transition-colors group cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink hover:text-amber-600 transition-colors min-h-[44px] px-2 cursor-pointer"
           >
-            <span>Xem thêm tài liệu</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
+            <span>Yêu cầu tài liệu kỹ thuật đầy đủ</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </div>

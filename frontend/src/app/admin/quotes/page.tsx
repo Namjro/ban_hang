@@ -17,8 +17,10 @@ import { QuoteRequest, UpdateQuoteStatusPayload } from '@/lib/types';
 import { getApiErrorMessage } from '@/lib/error-handler';
 import { useDebounce } from '@/hooks/useDebounce';
 import QuoteDetailModal from '@/components/admin/QuoteDetailModal';
+import { useToast } from '@/components/ui/Toast';
 
 export default function AdminQuotesPage() {
+  const toast = useToast();
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -54,10 +56,11 @@ export default function AdminQuotesPage() {
       const res = await quoteService.updateQuoteStatus(id, payload);
       if (res.success) {
         setSelectedQuote(res.data);
+        toast.success('Đã cập nhật trạng thái báo giá.');
         fetchQuotes();
       }
     } catch (err) {
-      alert(getApiErrorMessage(err, 'Lỗi cập nhật trạng thái.'));
+      toast.error(getApiErrorMessage(err, 'Lỗi cập nhật trạng thái.'));
     } finally {
       setUpdating(false);
     }
@@ -70,9 +73,10 @@ export default function AdminQuotesPage() {
       if (selectedQuote?.id === id) {
         setSelectedQuote(null);
       }
+      toast.success('Đã xóa yêu cầu báo giá.');
       fetchQuotes();
     } catch (err) {
-      alert(getApiErrorMessage(err, 'Lỗi khi xóa yêu cầu báo giá.'));
+      toast.error(getApiErrorMessage(err, 'Lỗi khi xóa yêu cầu báo giá.'));
     }
   };
 

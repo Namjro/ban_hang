@@ -22,11 +22,11 @@ export default function WarehouseCapabilities() {
   ];
 
   return (
-    <section id="capabilities" className="bg-white py-16 lg:py-[80px] border-b border-[#dce2ea]">
+    <section id="capabilities" className="bg-surface py-16 lg:py-24 border-b border-line">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] flex flex-col lg:flex-row items-center gap-12 lg:gap-[72px]">
         {/* Left column: Warehouse Photography */}
         <div className="flex-1 w-full max-w-[612px]">
-          <div className="relative h-[360px] sm:h-[430px] rounded-[8px] overflow-hidden border border-[#dce2ea] shadow-xs">
+          <div className="relative h-[340px] sm:h-[420px] rounded-[8px] overflow-hidden border border-line shadow-axiom-card">
             <Image
               src="/assets/images/warehouse.png"
               alt="Kho hàng thiết bị công nghiệp AXIOM"
@@ -34,9 +34,9 @@ export default function WarehouseCapabilities() {
               className="object-cover"
             />
             {/* Caption badge */}
-            <div className="absolute bottom-5 left-5 bg-[#0b132b]/95 backdrop-blur-xs text-white px-4 py-3 rounded-[4px] flex items-center gap-2.5 shadow-md">
-              <PackageCheck className="w-4 h-4 text-[#10b981] shrink-0" />
-              <span className="text-[12px] font-medium">
+            <div className="absolute bottom-5 left-5 right-5 sm:right-auto bg-navy-900/95 text-white px-4 py-3 rounded-[4px] flex items-center gap-2.5 shadow-md">
+              <PackageCheck className="w-4 h-4 text-emerald-400 shrink-0" aria-hidden="true" />
+              <span className="text-[13px] font-medium">
                 Kho hàng được tổ chức khoa học. Sẵn sàng xuất kho.
               </span>
             </div>
@@ -45,15 +45,15 @@ export default function WarehouseCapabilities() {
 
         {/* Right column: Supply Capabilities Details */}
         <div className="flex-1 max-w-[620px] flex flex-col gap-5">
-          <span className="text-[#475569] text-[11px] font-semibold tracking-[1.6px] uppercase">
-            03 / KHO HÀNG & NĂNG LỰC CUNG ỨNG
+          <span className="text-ink-muted text-[12px] font-semibold tracking-[1.4px] uppercase">
+            03 / KHO HÀNG &amp; NĂNG LỰC CUNG ỨNG
           </span>
 
-          <h2 className="text-[30px] sm:text-[36px] font-bold text-[#0b132b] tracking-[-1.3px] leading-[1.15]">
+          <h2 className="text-[28px] sm:text-[36px] font-bold text-ink tracking-[-0.03em] leading-[1.15]">
             Hơn cả cung ứng. <br className="hidden sm:inline" />Một đối tác kỹ thuật.
           </h2>
 
-          <p className="text-[#475569] text-[14px] leading-[1.6]">
+          <p className="text-ink-muted text-[14px] leading-[1.6]">
             Từ việc khớp thông số kỹ thuật đến hỗ trợ lắp đặt ban đầu, chúng tôi giúp bộ phận mua hàng và kỹ thuật của bạn phối hợp nhịp nhàng.
           </p>
 
@@ -62,16 +62,12 @@ export default function WarehouseCapabilities() {
               const Icon = cap.icon;
               return (
                 <div key={idx} className="flex items-start gap-3.5">
-                  <div className="w-9 h-9 rounded-[4px] bg-[#f8fafc] border border-[#dce2ea] flex items-center justify-center text-[#0b132b] shrink-0 mt-0.5">
-                    <Icon className="w-5 h-5 text-[#0b132b]" />
+                  <div className="w-10 h-10 rounded-[4px] bg-canvas border border-line flex items-center justify-center text-navy-900 shrink-0 mt-0.5">
+                    <Icon className="w-5 h-5 text-navy-900" aria-hidden="true" />
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <h4 className="text-[14px] font-semibold text-[#0b132b]">
-                      {cap.title}
-                    </h4>
-                    <p className="text-[#475569] text-[13px] leading-relaxed">
-                      {cap.desc}
-                    </p>
+                    <h3 className="text-[15px] font-semibold text-ink">{cap.title}</h3>
+                    <p className="text-ink-muted text-[13px] leading-relaxed">{cap.desc}</p>
                   </div>
                 </div>
               );

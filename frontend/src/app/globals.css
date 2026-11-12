@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@theme {
+  --color-navy-950: #050914;
+  --color-navy-900: #0b132b;
+  --color-navy-800: #152039;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-100: #fef3c7;
+
+  --color-ink: #0b132b;
+  --color-ink-muted: #475569;
+  --color-ink-dim: #64748b;
+  --color-ink-subtle: #e2e8f0;
+
+  --color-line: #dce2ea;
+  --color-line-dark: #475569;
+  --color-surface: #ffffff;
+  --color-canvas: #f8fafc;
+
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 :root {
   --axiom-navy: #0b132b;
   --axiom-navy-dark: #050914;
@@ -11,64 +33,40 @@
   --axiom-border-light: #dce2ea;
   --axiom-border-dark: #475569;
   --axiom-text-muted: #475569;
-  --axiom-text-dim: #94a3b8;
+  --axiom-text-dim: #64748b;
   --axiom-text-subtle: #e8edf3;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background-color: #f8fafc;
-  color: #0b132b;
-  font-family: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Axiom Utility classes */
-.bg-axiom-navy {
-  background-color: var(--axiom-navy);
+/* Accessibility: Visible keyboard focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-amber-500);
+  outline-offset: 2px;
 }
 
-.bg-axiom-navy-sub {
-  background-color: var(--axiom-navy-sub);
-}
-
-.bg-axiom-amber {
-  background-color: var(--axiom-amber);
-}
-
-.bg-axiom-amber-hover:hover {
-  background-color: var(--axiom-amber-hover);
-}
-
-.bg-axiom-slate {
-  background-color: var(--axiom-slate-bg);
-}
-
-.text-axiom-navy {
-  color: var(--axiom-navy);
-}
-
-.text-axiom-amber {
-  color: var(--axiom-amber);
-}
-
-.text-axiom-muted {
-  color: var(--axiom-text-muted);
-}
-
-.text-axiom-dim {
-  color: var(--axiom-text-dim);
-}
-
-.border-axiom-light {
-  border-color: var(--axiom-border-light);
-}
-
-.border-axiom-dark {
-  border-color: var(--axiom-border-dark);
-}
-
-.border-axiom-amber {
-  border-color: var(--axiom-amber);
+/* Accessibility: Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Modal and card shadows */

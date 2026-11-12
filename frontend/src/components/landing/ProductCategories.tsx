@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export default function ProductCategories() {
   const categories = [
@@ -68,19 +69,19 @@ export default function ProductCategories() {
   ];
 
   return (
-    <section className="bg-white py-16 lg:py-[80px] border-b border-[#dce2ea]">
+    <section className="bg-surface py-16 lg:py-24 border-b border-line">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px]">
         {/* Section Heading */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-10">
           <div className="flex flex-col gap-3 max-w-[700px]">
-            <span className="text-[#475569] text-[11px] font-semibold tracking-[1.6px] uppercase">
+            <span className="text-ink-muted text-[12px] font-semibold tracking-[1.4px] uppercase">
               01 / DANH MỤC SẢN PHẨM
             </span>
-            <h2 className="text-[28px] sm:text-[36px] font-bold text-[#0b132b] tracking-[-1.3px] leading-[1.2]">
+            <h2 className="text-[28px] sm:text-[36px] font-bold text-ink tracking-[-0.03em] leading-[1.2]">
               Thiết bị phù hợp. Cho mọi quy trình sản xuất.
             </h2>
           </div>
-          <p className="text-[#475569] text-[14px] leading-[1.6] max-w-[390px]">
+          <p className="text-ink-muted text-[14px] leading-[1.6] max-w-[390px]">
             Từ bước gia công đầu tiên đến kiểm tra cuối cùng, tìm ngay dụng cụ giúp bạn giữ dung sai chính xác và dây chuyền vận hành liên tục.
           </p>
         </div>
@@ -90,64 +91,66 @@ export default function ProductCategories() {
           {categories.map((cat, idx) => (
             <div
               key={idx}
-              className="bg-white border border-[#dce2ea] rounded-[8px] overflow-hidden flex flex-col hover:border-[#0b132b] transition-all duration-200 group shadow-xs hover:shadow-md"
+              className="bg-surface border border-line rounded-[8px] overflow-hidden flex flex-col hover:border-navy-900 transition-colors duration-200 group shadow-axiom-card hover:shadow-md"
             >
               {/* Product Media */}
-              <div className="bg-[#f8fafc] h-[204px] relative overflow-hidden flex items-center justify-center p-4">
+              <div className="bg-canvas h-[204px] relative overflow-hidden flex items-center justify-center p-4 border-b border-line">
                 <Image
                   src={cat.image}
                   alt={cat.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover"
                 />
               </div>
 
               {/* Information */}
               <div className="p-6 flex flex-col flex-1 justify-between gap-5">
                 <div className="flex flex-col gap-2">
-                  <span className="text-[#475569] text-[10px] font-semibold tracking-[1.4px] uppercase">
+                  <span className="text-ink-muted text-[12px] font-semibold tracking-[1px] uppercase">
                     {cat.sub}
                   </span>
-                  <h3 className="text-[20px] font-bold text-[#0b132b] tracking-[-0.5px] min-h-[48px] line-clamp-2">
+                  <h3 className="text-[20px] font-bold text-ink tracking-[-0.02em] min-h-[48px] line-clamp-2">
                     {cat.title}
                   </h3>
 
                   <div className="flex flex-col gap-2.5 pt-2">
                     <div className="flex flex-col">
-                      <span className="text-[#475569] text-[11px]">{cat.line1Title}</span>
-                      <span className="text-[#0b132b] text-[13px] font-medium">{cat.line1Val}</span>
+                      <span className="text-ink-dim text-[12px]">{cat.line1Title}</span>
+                      <span className="text-ink text-[13px] font-medium">{cat.line1Val}</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[#475569] text-[11px]">{cat.line2Title}</span>
-                      <span className="text-[#0b132b] text-[13px] font-medium">{cat.line2Val}</span>
+                      <span className="text-ink-dim text-[12px]">{cat.line2Title}</span>
+                      <span className="text-ink text-[13px] font-medium">{cat.line2Val}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* View Details Action */}
-                <Link
+                <Button
                   href={`/products?category=${cat.slug}`}
-                  className="border border-[#dce2ea] hover:bg-[#0b132b] hover:text-white text-[#0b132b] font-medium text-[14px] h-[50px] px-5 rounded-[4px] flex items-center justify-center gap-2 transition-all"
+                  variant="secondary"
+                  size="lg"
+                  className="w-full hover:bg-navy-900 hover:text-white hover:border-navy-900"
                 >
                   <span>Xem Chi Tiết</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                </Button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Sourcing assistance bar (Figma Node 3:2670) */}
-        <div className="pt-8 border-t border-[#dce2ea] mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[14px]">
-          <p className="text-[#475569] text-center sm:text-left">
+        {/* Sourcing assistance bar */}
+        <div className="pt-8 border-t border-line mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[14px]">
+          <p className="text-ink-muted text-center sm:text-left">
             Chưa tìm thấy phụ tùng phù hợp? Gửi bản vẽ, mã SKU hoặc yêu cầu kỹ thuật.
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center gap-1.5 font-semibold text-[#0b132b] hover:text-[#f59e0b] transition-colors shrink-0 group"
+            className="inline-flex items-center gap-1.5 font-semibold text-ink hover:text-amber-600 transition-colors shrink-0 group min-h-[44px]"
           >
             <span>Xem thêm sản phẩm</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

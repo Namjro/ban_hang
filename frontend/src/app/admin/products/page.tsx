@@ -19,8 +19,10 @@ import { SAMPLE_PRODUCT_IMAGES } from '@/constants';
 import { getApiErrorMessage } from '@/lib/error-handler';
 import { useDebounce } from '@/hooks/useDebounce';
 import ProductFormModal from '@/components/admin/ProductFormModal';
+import { useToast } from '@/components/ui/Toast';
 
 export default function AdminProductsPage() {
+  const toast = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -110,13 +112,15 @@ export default function AdminProductsPage() {
     try {
       if (editingProduct) {
         await productService.updateProduct(editingProduct.id, payload);
+        toast.success('Đã cập nhật thông tin sản phẩm.');
       } else {
         await productService.createProduct(payload);
+        toast.success('Đã thêm sản phẩm mới vào kho.');
       }
       setIsModalOpen(false);
       fetchProducts(pagination.current_page);
     } catch (err) {
-      alert(getApiErrorMessage(err, 'Lỗi lưu sản phẩm. Vui lòng kiểm tra mã SKU không trùng lặp.'));
+      toast.error(getApiErrorMessage(err, 'Lỗi lưu sản phẩm. Vui lòng kiểm tra mã SKU không trùng lặp.'));
     } finally {
       setSaving(false);
     }
@@ -126,9 +130,10 @@ export default function AdminProductsPage() {
     if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
     try {
       await productService.deleteProduct(id);
+      toast.success('Đã xóa sản phẩm.');
       fetchProducts(pagination.current_page);
     } catch (err) {
-      alert(getApiErrorMessage(err, 'Không thể xóa sản phẩm.'));
+      toast.error(getApiErrorMessage(err, 'Không thể xóa sản phẩm.'));
     }
   };
 

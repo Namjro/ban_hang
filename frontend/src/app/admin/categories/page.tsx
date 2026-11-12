@@ -18,8 +18,10 @@ import { Category, CategoryPayload } from '@/lib/types';
 import { getApiErrorMessage } from '@/lib/error-handler';
 import { useDebounce } from '@/hooks/useDebounce';
 import CategoryFormModal, { getCategoryIcon } from '@/components/admin/CategoryFormModal';
+import { useToast } from '@/components/ui/Toast';
 
 export default function AdminCategoriesPage() {
+  const toast = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -89,7 +91,7 @@ export default function AdminCategoriesPage() {
 
   const handleDeleteCategory = async (cat: Category) => {
     if (cat.products_count && cat.products_count > 0) {
-      alert(
+      toast.warning(
         `Không thể xóa danh mục "${cat.name}" vì đang có ${cat.products_count} sản phẩm trực thuộc. Vui lòng chuyển hoặc xóa các sản phẩm này trước.`
       );
       return;
@@ -99,9 +101,10 @@ export default function AdminCategoriesPage() {
 
     try {
       await categoryService.deleteCategory(cat.id);
+      toast.success(`Đã xóa danh mục "${cat.name}".`);
       fetchCategories();
     } catch (err) {
-      alert(getApiErrorMessage(err, 'Lỗi khi xóa danh mục.'));
+      toast.error(getApiErrorMessage(err, 'Lỗi khi xóa danh mục.'));
     }
   };
 

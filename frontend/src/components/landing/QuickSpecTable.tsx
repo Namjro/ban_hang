@@ -149,8 +149,57 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
           </div>
         </div>
 
-        {/* Specification Comparison Table */}
-        <div className="border border-line rounded-[8px] overflow-hidden bg-surface shadow-axiom-card overflow-x-auto">
+        {/* Mobile Spec Cards */}
+        <div className="md:hidden flex flex-col gap-3">
+          {rows.map((row) => (
+            <div
+              key={row.sku}
+              className="bg-surface border border-line rounded-[8px] p-4 shadow-axiom-card flex flex-col gap-3"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <Link
+                  href={`/products/${row.slug}`}
+                  className="bg-navy-900 text-white font-mono text-[12px] font-bold px-2.5 py-1 rounded-[4px] inline-flex items-center gap-1"
+                >
+                  <span>{row.sku}</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
+                </Link>
+                <span className="text-[12px] font-semibold text-ink bg-canvas border border-line px-2.5 py-1 rounded-[4px]">
+                  {row.brand}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-0.5">
+                <Link
+                  href={`/products/${row.slug}`}
+                  className="font-bold text-ink hover:text-amber-600 text-[15px] transition-colors"
+                >
+                  {row.name}
+                </Link>
+                <span className="text-ink-muted text-[12px]">{row.group}</span>
+              </div>
+
+              <p className="text-[13px] text-ink-muted leading-relaxed bg-canvas border border-line rounded-[4px] px-3 py-2">
+                {row.dimensions}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => handleSpecSheetAction(row)}
+                className="w-full min-h-[44px] px-3.5 bg-canvas hover:bg-line/40 border border-line rounded-[4px] text-[13px] font-semibold text-ink inline-flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <FileDown
+                  className={`w-4 h-4 ${row.datasheetUrl ? 'text-amber-600' : 'text-ink'}`}
+                  aria-hidden="true"
+                />
+                <span>{row.datasheetUrl ? 'Tải Spec Sheet (PDF)' : 'Nhận Spec Sheet'}</span>
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Specification Comparison Table */}
+        <div className="hidden md:block border border-line rounded-[8px] overflow-hidden bg-surface shadow-axiom-card overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
               <tr className="bg-navy-900 text-white text-[12px] font-semibold tracking-[0.5px] uppercase">

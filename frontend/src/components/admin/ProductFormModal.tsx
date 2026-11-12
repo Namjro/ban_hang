@@ -149,32 +149,32 @@ export default function ProductFormModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0b132b]/60 backdrop-blur-[2px]">
-      <div className="bg-white border border-[#dce2ea] rounded-[8px] w-full max-w-[820px] p-6 shadow-2xl flex flex-col gap-5 max-h-[92vh] overflow-y-auto">
-        <div className="flex items-center justify-between border-b border-[#dce2ea] pb-3.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[4px] bg-[#0b132b] text-white flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0b132b]/60 backdrop-blur-[2px]">
+      <div className="bg-white border border-[#dce2ea] rounded-[8px] w-full max-w-[820px] p-4 sm:p-6 shadow-2xl flex flex-col gap-5 max-h-[92vh] overflow-y-auto overflow-x-hidden">
+        <div className="flex items-start sm:items-center justify-between gap-3 border-b border-[#dce2ea] pb-3.5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-[4px] bg-[#0b132b] text-white flex items-center justify-center shrink-0">
               <Package className="w-4 h-4 text-[#f59e0b]" />
             </div>
-            <div>
-              <h2 className="text-[18px] font-bold text-[#0b132b]">
+            <div className="min-w-0">
+              <h2 className="text-[16px] sm:text-[18px] font-bold text-[#0b132b] truncate">
                 {editingProduct
                   ? `Chỉnh Sửa Sản Phẩm (${editingProduct.sku})`
                   : 'Thêm Sản Phẩm Mới'}
               </h2>
-              <p className="text-[11px] text-[#475569]">
+              <p className="text-[11px] text-[#475569] line-clamp-2 sm:line-clamp-none">
                 Quản lý thông số kỹ thuật, hình ảnh, PDF spec sheet, chứng chỉ CO/CQ và hiển thị trang chủ.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {editingProduct && (
               <a
                 href={`/products/${editingProduct.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[12px] bg-[#f8fafc] border border-[#dce2ea] hover:border-[#0b132b] text-[#0b132b] px-3 py-1.5 rounded-[4px] font-medium flex items-center gap-1.5 transition-colors"
+                className="hidden sm:flex text-[12px] bg-[#f8fafc] border border-[#dce2ea] hover:border-[#0b132b] text-[#0b132b] px-3 py-1.5 rounded-[4px] font-medium items-center gap-1.5 transition-colors"
               >
                 <span>Xem Trên Web</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -183,7 +183,8 @@ export default function ProductFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-[4px] hover:bg-[#f8fafc] text-[#475569] transition-colors cursor-pointer"
+              aria-label="Đóng modal"
+              className="min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-[4px] hover:bg-[#f8fafc] text-[#475569] transition-colors cursor-pointer"
               title="Đóng modal"
             >
               <X className="w-5 h-5" />
@@ -197,33 +198,33 @@ export default function ProductFormModal({
           <ProductSpecsSection form={form} onChange={updateForm} />
           <ProductMarketingSection form={form} onChange={updateForm} />
 
-          <div className="flex items-center justify-between pt-3 border-t border-[#dce2ea]">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-[#dce2ea]">
             {editingProduct ? (
               <a
                 href={`/products/${editingProduct.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[12px] text-[#0b132b] hover:text-[#d97706] font-semibold flex items-center gap-1"
+                className="text-[12px] text-[#0b132b] hover:text-[#d97706] font-semibold flex items-center justify-center sm:justify-start gap-1 py-1"
               >
                 <span>Mở trang chi tiết sản phẩm ngoài web</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </a>
             ) : (
-              <div />
+              <div className="hidden sm:block" />
             )}
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-[#dce2ea] text-[#475569] hover:bg-[#f8fafc] rounded-[4px] text-[13px] font-medium cursor-pointer"
+                className="px-4 py-2.5 sm:py-2 border border-[#dce2ea] text-[#475569] hover:bg-[#f8fafc] rounded-[4px] text-[13px] font-medium cursor-pointer"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-5 py-2 bg-[#0b132b] hover:bg-[#152039] text-white rounded-[4px] text-[13px] font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                className="px-5 py-2.5 sm:py-2 bg-[#0b132b] hover:bg-[#152039] text-white rounded-[4px] text-[13px] font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                 <span>{editingProduct ? 'Cập Nhật Sản Phẩm' : 'Lưu Sản Phẩm'}</span>

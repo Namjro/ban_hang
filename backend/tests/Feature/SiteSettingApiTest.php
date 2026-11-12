@@ -97,4 +97,41 @@ class SiteSettingApiTest extends TestCase
             ->assertStatus(404)
             ->assertJsonPath('success', false);
     }
+
+    public function test_admin_can_update_hero_slides_and_validates_slide_image(): void
+    {
+        $token = $this->getAdminToken();
+
+        $original = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->getJson('/api/admin/settings/hero')
+            ->assertStatus(200)
+            ->json('data');
+
+        // Reject missing image_url inside slide
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->putJson('/api/admin/settings/hero', array_merge($original, [
+                'slides' => [
+                    ['image_url' => '', 'caption_left' => 'Test', 'caption_right' => 'Test'],
+                ],
+            ]))
+            ->assertStatus(422)
+            ->assertJsonStructure(['errors' => ['slides.0.image_url']]);
+
+        // Accept valid slides array and sync first slide to image_url
+        $newSlides = [
+            ['image_url' => '/assets/images/warehouse.png', 'caption_left' => 'SLIDE 1', 'caption_right' => 'R1'],
+            ['image_url' => '/assets/images/cat-cnc.png', 'caption_left' => 'SLIDE 2', 'caption_right' => 'R2'],
+        ];
+
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->putJson('/api/admin/settings/hero', array_merge($original, ['slides' => $newSlides]))
+            ->assertStatus(200)
+            ->assertJsonPath('data.image_url', '/assets/images/warehouse.png')
+            ->assertJsonCount(2, 'data.slides');
+
+        // Restore original hero settings
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->putJson('/api/admin/settings/hero', $original)
+            ->assertStatus(200);
+    }
 }

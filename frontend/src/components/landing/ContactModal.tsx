@@ -131,7 +131,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   placeholder="Họ và tên đầy đủ"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                   value={formData.company_name}
                   onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                   placeholder="Tên công ty / xưởng"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
                 />
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="0912 345 678"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
                 />
               </div>
 
@@ -174,7 +174,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="email@congty.vn"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
                 />
               </div>
             </div>
@@ -189,7 +189,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                 value={formData.sku_target}
                 onChange={(e) => setFormData({ ...formData, sku_target: e.target.value })}
                 placeholder="Vd: AX-PM-150 / phạm vi đo 0–150 mm"
-                className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
+                className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b]"
               />
             </div>
 
@@ -203,7 +203,7 @@ export default function ContactModal({ isOpen, onClose, initialSku = '' }: Conta
                 value={formData.requirement_content}
                 onChange={(e) => setFormData({ ...formData, requirement_content: e.target.value })}
                 placeholder="Số lượng, ứng dụng, yêu cầu giao hàng, thời gian cần phản hồi…"
-                className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] resize-none"
+                className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] resize-none"
               />
             </div>
 

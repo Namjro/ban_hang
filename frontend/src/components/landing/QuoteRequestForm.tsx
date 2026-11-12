@@ -64,15 +64,15 @@ export default function QuoteRequestForm({
   };
 
   return (
-    <section id="quote-request" className="bg-[#0b132b] text-white py-16 lg:py-[80px]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] flex flex-col lg:flex-row items-center gap-12 lg:gap-[96px]">
+    <section id="quote-request" className="bg-[#0b132b] text-white py-12 sm:py-16 lg:py-[80px]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] flex flex-col lg:flex-row items-center gap-10 sm:gap-12 lg:gap-[96px]">
         {/* Left Column: Proposition and direct hotline */}
         <div className="flex-1 max-w-[620px] flex flex-col gap-6">
           <span className="text-[#94a3b8] text-[11px] font-semibold tracking-[1.6px] uppercase">
             04 / LỢI THẾ SẢN XUẤT TIẾP THEO CỦA BẠN
           </span>
 
-          <h2 className="text-[34px] sm:text-[44px] font-bold text-white tracking-[-1.5px] leading-[1.1]">
+          <h2 className="text-[28px] sm:text-[36px] lg:text-[44px] font-bold text-white tracking-[-1.2px] sm:tracking-[-1.5px] leading-[1.12]">
             Thông số của bạn. <br />Năng lực tìm nguồn của chúng tôi.
           </h2>
 
@@ -167,7 +167,7 @@ export default function QuoteRequestForm({
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                     placeholder="Họ và tên đầy đủ của bạn"
-                    className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
+                    className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
                   />
                 </div>
 
@@ -181,7 +181,7 @@ export default function QuoteRequestForm({
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     placeholder="Số điện thoại liên hệ"
-                    className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
+                    className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
                   />
                 </div>
               </div>
@@ -196,7 +196,7 @@ export default function QuoteRequestForm({
                   value={formData.sku_target}
                   onChange={(e) => setFormData({ ...formData, sku_target: e.target.value })}
                   placeholder="Vd: AX-PM-150 / phạm vi đo 0–150 mm / Dao phay Ø10"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b]"
                 />
               </div>
 
@@ -210,7 +210,7 @@ export default function QuoteRequestForm({
                   value={formData.requirement_content}
                   onChange={(e) => setFormData({ ...formData, requirement_content: e.target.value })}
                   placeholder="Số lượng, ứng dụng gia công, yêu cầu thời gian giao hàng…"
-                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b] resize-none"
+                  className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3.5 py-2.5 text-[16px] sm:text-[13px] text-[#0b132b] placeholder-[#94a3b8] focus:outline-none focus:border-[#0b132b] focus:ring-1 focus:ring-[#0b132b] resize-none"
                 />
               </div>
 

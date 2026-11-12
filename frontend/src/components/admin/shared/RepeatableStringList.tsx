@@ -59,18 +59,18 @@ export default function RepeatableStringList({
       ) : (
         <div className="flex flex-col gap-2">
           {items.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2">
+            <div key={idx} className="flex items-center gap-2 min-w-0">
               <input
                 type="text"
                 value={item}
                 onChange={(e) => handleUpdate(idx, e.target.value)}
                 placeholder={placeholder}
-                className="flex-1 bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] text-[#0b132b] focus:outline-none focus:border-[#0b132b]"
+                className="flex-1 min-w-0 bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[13px] text-[#0b132b] focus:outline-none focus:border-[#0b132b]"
               />
               <button
                 type="button"
                 onClick={() => handleRemove(idx)}
-                className="p-2 text-[#475569] hover:text-red-600 hover:bg-red-50 rounded-[4px] transition-colors cursor-pointer"
+                className="p-2 min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-[#475569] hover:text-red-600 hover:bg-red-50 rounded-[4px] transition-colors cursor-pointer shrink-0"
                 title="Xóa dòng"
               >
                 <Trash2 className="w-4 h-4" />

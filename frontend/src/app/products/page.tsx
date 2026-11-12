@@ -176,27 +176,28 @@ function ProductsCatalogContent() {
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] pt-8 pb-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] pt-6 sm:pt-8 pb-5 sm:pb-6">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               fetchProducts(1);
             }}
-            className="bg-white border border-[#dce2ea] rounded-[4px] h-[52px] flex items-center px-4 gap-3 shadow-xs focus-within:border-[#0b132b] focus-within:ring-1 focus-within:ring-[#0b132b] transition-all"
+            className="bg-white border border-[#dce2ea] rounded-[4px] h-[52px] flex items-center pl-3.5 pr-2 sm:px-4 gap-2.5 sm:gap-3 shadow-xs focus-within:border-[#0b132b] focus-within:ring-1 focus-within:ring-[#0b132b] transition-all"
           >
             <Search className="w-5 h-5 text-[#475569] shrink-0" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên sản phẩm, mã SKU hoặc thông số kỹ thuật (vd: AX-PM-150, Vertex, BT40, 55 HRC)..."
-              className="bg-transparent text-[14px] text-[#0b132b] placeholder-[#94a3b8] w-full focus:outline-none"
+              placeholder="Tìm tên sản phẩm, mã SKU, hãng..."
+              className="bg-transparent text-[16px] sm:text-[14px] text-[#0b132b] placeholder-[#94a3b8] w-full focus:outline-none min-w-0"
             />
             <button
               type="submit"
-              className="bg-[#0b132b] hover:bg-[#152039] text-white text-[13px] font-medium h-[38px] px-4 rounded-[4px] shrink-0 transition-colors cursor-pointer"
+              className="bg-[#0b132b] hover:bg-[#152039] text-white text-[13px] font-medium h-[38px] px-3 sm:px-4 rounded-[4px] shrink-0 transition-colors cursor-pointer"
             >
-              Tìm kiếm
+              <span className="sm:hidden">Tìm</span>
+              <span className="hidden sm:inline">Tìm kiếm</span>
             </button>
           </form>
         </div>
@@ -257,7 +258,7 @@ function ProductsCatalogContent() {
 
                   {/* Pagination */}
                   {pagination.last_page > 1 && (
-                    <div className="flex items-center justify-center gap-2 pt-6">
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-6">
                       {Array.from({ length: pagination.last_page }).map((_, pIdx) => {
                         const pageNum = pIdx + 1;
                         return (
@@ -298,7 +299,7 @@ function ProductsCatalogContent() {
                     setQuoteTargetSku('TÌM NGUỒN THEO BẢN VẼ');
                     setIsQuoteModalOpen(true);
                   }}
-                  className="bg-[#f59e0b] hover:bg-[#d97706] text-[#0b132b] font-semibold text-[13px] h-[46px] px-6 rounded-[4px] flex items-center justify-center gap-2 shrink-0 transition-colors whitespace-nowrap cursor-pointer"
+                  className="w-full md:w-auto bg-[#f59e0b] hover:bg-[#d97706] text-[#0b132b] font-semibold text-[13px] h-[46px] px-6 rounded-[4px] flex items-center justify-center gap-2 shrink-0 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   <span>Gửi Yêu Cầu Tìm Nguồn</span>
                   <ArrowRight className="w-4 h-4" />

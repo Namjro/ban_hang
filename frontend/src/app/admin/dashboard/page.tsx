@@ -183,7 +183,7 @@ export default function AdminDashboardPage() {
 
       {/* Recent Leads Table */}
       <div className="bg-white border border-[#dce2ea] rounded-[8px] overflow-hidden shadow-xs">
-        <div className="p-5 border-b border-[#dce2ea] flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-[#dce2ea] flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-col gap-0.5">
             <h2 className="text-[16px] font-bold text-[#0b132b]">
               Yêu Cầu Báo Giá Gần Đây
@@ -195,7 +195,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/quotes"
-            className="text-[13px] text-[#0b132b] hover:text-[#f59e0b] font-semibold flex items-center gap-1"
+            className="text-[13px] text-[#0b132b] hover:text-[#f59e0b] font-semibold flex items-center gap-1 min-h-[36px]"
           >
             <span>Xem tất cả</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -203,70 +203,134 @@ export default function AdminDashboardPage() {
         </div>
 
         {stats?.recent_quotes && stats.recent_quotes.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-[13px]">
-              <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
-                <tr>
-                  <th className="py-3 px-5">Khách Hàng</th>
-                  <th className="py-3 px-5">Điện Thoại</th>
-                  <th className="py-3 px-5">Mã SKU Cần Tìm</th>
-                  <th className="py-3 px-5">Nguồn</th>
-                  <th className="py-3 px-5">Trạng Thái</th>
-                  <th className="py-3 px-5">Thời Gian</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#dce2ea]">
-                {stats.recent_quotes.map((q) => (
-                  <tr key={q.id} className="hover:bg-[#f8fafc] transition-colors">
-                    <td className="py-3 px-5 font-semibold text-[#0b132b]">
-                      <div>{q.full_name}</div>
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-[#dce2ea]">
+              {stats.recent_quotes.map((q) => (
+                <div key={q.id} className="p-4 flex flex-col gap-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-semibold text-[14px] text-[#0b132b] truncate">
+                        {q.full_name}
+                      </div>
                       {q.company_name && (
-                        <div className="text-[11px] text-[#475569] font-normal">
+                        <div className="text-[12px] text-[#475569] truncate">
                           {q.company_name}
                         </div>
                       )}
-                    </td>
-                    <td className="py-3 px-5 font-mono text-[#0b132b]">{q.phone}</td>
-                    <td className="py-3 px-5">
-                      <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-2 py-0.5 rounded-[2px] text-[12px] font-semibold text-[#0b132b]">
-                        {q.sku_target || 'Tư vấn tổng quát'}
+                    </div>
+                    {q.status === 'new' ? (
+                      <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] shrink-0">
+                        Mới nhận
                       </span>
-                    </td>
-                    <td className="py-3 px-5 text-[#475569] text-[12px]">
-                      {q.source === 'landing_form' ? 'Landing Form' : 'Modal Popup'}
-                    </td>
-                    <td className="py-3 px-5">
-                      {q.status === 'new' ? (
-                        <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
-                          Mới nhận
-                        </span>
-                      ) : q.status === 'contacted' ? (
-                        <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
-                          Đã liên hệ
-                        </span>
-                      ) : q.status === 'quoted' ? (
-                        <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
-                          Đã báo giá
-                        </span>
-                      ) : (
-                        <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
-                          Hoàn tất
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-5 text-[#94a3b8] text-[12px]">
+                    ) : q.status === 'contacted' ? (
+                      <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] shrink-0">
+                        Đã liên hệ
+                      </span>
+                    ) : q.status === 'quoted' ? (
+                      <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] shrink-0">
+                        Đã báo giá
+                      </span>
+                    ) : (
+                      <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] shrink-0">
+                        Hoàn tất
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[12px]">
+                    <a
+                      href={`tel:${q.phone}`}
+                      className="font-mono font-semibold text-[#0b132b] underline decoration-[#dce2ea]"
+                    >
+                      {q.phone}
+                    </a>
+                    <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-2 py-0.5 rounded-[2px] text-[11px] font-semibold text-[#0b132b]">
+                      {q.sku_target || 'Tư vấn tổng quát'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-[#94a3b8]">
+                    <span>{q.source === 'landing_form' ? 'Landing Form' : 'Modal Popup'}</span>
+                    <span>
                       {new Date(q.created_at).toLocaleString('vi-VN', {
                         hour: '2-digit',
                         minute: '2-digit',
                         day: '2-digit',
                         month: '2-digit',
                       })}
-                    </td>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
+                <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
+                  <tr>
+                    <th className="py-3 px-5">Khách Hàng</th>
+                    <th className="py-3 px-5">Điện Thoại</th>
+                    <th className="py-3 px-5">Mã SKU Cần Tìm</th>
+                    <th className="py-3 px-5">Nguồn</th>
+                    <th className="py-3 px-5">Trạng Thái</th>
+                    <th className="py-3 px-5">Thời Gian</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-[#dce2ea]">
+                  {stats.recent_quotes.map((q) => (
+                    <tr key={q.id} className="hover:bg-[#f8fafc] transition-colors">
+                      <td className="py-3 px-5 font-semibold text-[#0b132b]">
+                        <div>{q.full_name}</div>
+                        {q.company_name && (
+                          <div className="text-[11px] text-[#475569] font-normal">
+                            {q.company_name}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3 px-5 font-mono text-[#0b132b]">{q.phone}</td>
+                      <td className="py-3 px-5">
+                        <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-2 py-0.5 rounded-[2px] text-[12px] font-semibold text-[#0b132b]">
+                          {q.sku_target || 'Tư vấn tổng quát'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-5 text-[#475569] text-[12px]">
+                        {q.source === 'landing_form' ? 'Landing Form' : 'Modal Popup'}
+                      </td>
+                      <td className="py-3 px-5">
+                        {q.status === 'new' ? (
+                          <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
+                            Mới nhận
+                          </span>
+                        ) : q.status === 'contacted' ? (
+                          <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
+                            Đã liên hệ
+                          </span>
+                        ) : q.status === 'quoted' ? (
+                          <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
+                            Đã báo giá
+                          </span>
+                        ) : (
+                          <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
+                            Hoàn tất
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-5 text-[#94a3b8] text-[12px]">
+                        {new Date(q.created_at).toLocaleString('vi-VN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          day: '2-digit',
+                          month: '2-digit',
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <div className="p-10 text-center text-[#475569] text-[13px]">
             Chưa có yêu cầu báo giá nào được gửi. Khách hàng gửi form từ Landing Page sẽ hiển thị ngay tại đây.

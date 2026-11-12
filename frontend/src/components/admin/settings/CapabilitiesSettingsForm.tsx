@@ -101,7 +101,7 @@ export default function CapabilitiesSettingsForm({
             key={idx}
             className="p-3 bg-[#f8fafc] border border-[#dce2ea] rounded-[6px] flex flex-col gap-2"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0">
               <IconPicker
                 value={item.icon}
                 onChange={(icon) => {
@@ -109,29 +109,32 @@ export default function CapabilitiesSettingsForm({
                   next[idx] = { ...next[idx], icon };
                   setForm({ ...form, items: next });
                 }}
-                className="w-60 shrink-0"
+                className="w-full sm:w-60 shrink-0"
               />
-              <input
-                type="text"
-                required
-                value={item.title}
-                onChange={(e) => {
-                  const next = [...form.items];
-                  next[idx] = { ...next[idx], title: e.target.value };
-                  setForm({ ...form, items: next });
-                }}
-                placeholder="Tiêu đề năng lực"
-                className="flex-1 bg-white border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] font-semibold text-[#0b132b]"
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  setForm({ ...form, items: form.items.filter((_, i) => i !== idx) })
-                }
-                className="p-2 text-[#475569] hover:text-red-600 rounded-[4px] cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <input
+                  type="text"
+                  required
+                  value={item.title}
+                  onChange={(e) => {
+                    const next = [...form.items];
+                    next[idx] = { ...next[idx], title: e.target.value };
+                    setForm({ ...form, items: next });
+                  }}
+                  placeholder="Tiêu đề năng lực"
+                  className="flex-1 min-w-0 bg-white border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[13px] font-semibold text-[#0b132b]"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm({ ...form, items: form.items.filter((_, i) => i !== idx) })
+                  }
+                  aria-label="Xóa mục năng lực"
+                  className="p-2 min-w-[40px] min-h-[40px] inline-flex items-center justify-center text-[#475569] hover:text-red-600 rounded-[4px] cursor-pointer shrink-0"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <input
               type="text"

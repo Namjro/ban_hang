@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Search, FileText } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 import SiteIcon from '@/components/ui/SiteIcon';
+import HeroSlider from '@/components/landing/HeroSlider';
 import { DEFAULT_SITE_SETTINGS } from '@/constants';
-import { HeroSettings } from '@/lib/types';
+import { HeroSettings, HeroSlide } from '@/lib/types';
 
 interface HeroProps {
   onOpenQuoteModal?: () => void;
@@ -27,6 +27,17 @@ export default function Hero({ onOpenQuoteModal, settings = DEFAULT_SITE_SETTING
       router.push('/products');
     }
   };
+
+  const resolvedSlides: HeroSlide[] =
+    settings.slides && settings.slides.length > 0
+      ? settings.slides
+      : [
+          {
+            image_url: settings.image_url || '/assets/images/cnc-machinery.png',
+            caption_left: settings.caption_left || '',
+            caption_right: settings.caption_right || '',
+          },
+        ];
 
   return (
     <section className="bg-navy-900 text-white overflow-hidden py-12 md:py-16 lg:py-20 border-b border-navy-800">
@@ -104,27 +115,9 @@ export default function Hero({ onOpenQuoteModal, settings = DEFAULT_SITE_SETTING
           </p>
         </div>
 
-        {/* Right column: Machinery showcase */}
+        {/* Right column: Machinery showcase slider */}
         <div className="flex-1 w-full max-w-[600px]">
-          <div className="relative w-full aspect-[4/3] rounded-[8px] overflow-hidden border border-line-dark bg-navy-800">
-            <Image
-              src={settings.image_url || '/assets/images/cnc-machinery.png'}
-              alt={settings.title}
-              fill
-              className="object-cover"
-              unoptimized={Boolean(settings.image_url?.startsWith('http'))}
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900/75 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3">
-              <span className="font-mono text-[12px] font-semibold text-white tracking-wider uppercase">
-                {settings.caption_left}
-              </span>
-              <span className="font-mono text-[12px] text-amber-500 font-semibold">
-                {settings.caption_right}
-              </span>
-            </div>
-          </div>
+          <HeroSlider slides={resolvedSlides} title={settings.title} />
         </div>
       </div>
     </section>

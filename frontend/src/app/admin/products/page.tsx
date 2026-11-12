@@ -20,6 +20,7 @@ import { getApiErrorMessage } from '@/lib/error-handler';
 import { useDebounce } from '@/hooks/useDebounce';
 import ProductFormModal from '@/components/admin/ProductFormModal';
 import { useToast } from '@/components/ui/Toast';
+import SelectField from '@/components/ui/SelectField';
 
 export default function AdminProductsPage() {
   const toast = useToast();
@@ -165,8 +166,8 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-2 w-full sm:w-[320px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] focus-within:border-[#0b132b]">
+      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-2xs">
+        <div className="flex items-center gap-2 w-full sm:w-[320px] min-h-[44px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[13px] focus-within:border-[#0b132b]">
           <Search className="w-4 h-4 text-[#94a3b8] shrink-0" />
           <input
             type="text"
@@ -177,12 +178,12 @@ export default function AdminProductsPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-          <select
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto min-w-0">
+          <SelectField
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
             aria-label="Lọc theo danh mục"
-            className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] text-[#0b132b] focus:outline-none"
+            wrapperClassName="sm:w-[210px]"
           >
             <option value="">Tất cả danh mục</option>
             {categories.map((c) => (
@@ -190,23 +191,23 @@ export default function AdminProductsPage() {
                 {c.name}
               </option>
             ))}
-          </select>
+          </SelectField>
 
-          <select
+          <SelectField
             value={stockFilter}
             onChange={(e) => setStockFilter(e.target.value)}
             aria-label="Lọc theo tình trạng tồn kho"
-            className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] text-[#0b132b] focus:outline-none"
+            wrapperClassName="sm:w-[180px]"
           >
             <option value="">Tất cả tồn kho</option>
             <option value="in_stock">Hàng có sẵn</option>
             <option value="low_stock">Sắp hết hàng</option>
             <option value="pre_order">Đặt trước</option>
-          </select>
+          </SelectField>
         </div>
       </div>
 
-      {/* Products Table */}
+      {/* Products List / Table */}
       <div className="bg-white border border-[#dce2ea] rounded-[8px] overflow-hidden shadow-xs">
         {loading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
@@ -218,8 +219,129 @@ export default function AdminProductsPage() {
             Không tìm thấy sản phẩm nào phù hợp.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-[13px]">
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-[#dce2ea]">
+              {products.map((p) => {
+                const thumbnail =
+                  (Array.isArray(p.images) && p.images[0]) ||
+                  p.image_url ||
+                  SAMPLE_PRODUCT_IMAGES[0];
+                const imgCount = Array.isArray(p.images)
+                  ? p.images.length
+                  : p.image_url
+                    ? 1
+                    : 0;
+
+                return (
+                  <div key={p.id} className="p-4 flex flex-col gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="relative w-14 h-14 rounded-[4px] bg-[#f1f5f9] border border-[#dce2ea] overflow-hidden flex items-center justify-center shrink-0">
+                        <Image
+                          src={thumbnail}
+                          alt={p.name}
+                          fill
+                          unoptimized={thumbnail.startsWith('data:') || thumbnail.startsWith('http')}
+                          className="object-contain p-1"
+                        />
+                        {imgCount > 1 && (
+                          <span className="absolute bottom-0 right-0 bg-[#0b132b]/90 text-white text-[9px] font-mono px-1 rounded-tl-[3px] leading-tight font-bold">
+                            {imgCount}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-mono text-[12px] font-bold text-[#0b132b]">
+                            {p.sku}
+                          </span>
+                          {p.stock_status === 'in_stock' ? (
+                            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-2 py-0.5 rounded-[2px] inline-flex items-center gap-1 shrink-0">
+                              <Check className="w-3 h-3" /> Có sẵn
+                            </span>
+                          ) : p.stock_status === 'low_stock' ? (
+                            <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold px-2 py-0.5 rounded-[2px] shrink-0">
+                              Sắp hết
+                            </span>
+                          ) : (
+                            <span className="bg-slate-100 text-slate-700 border border-slate-300 text-[10px] font-semibold px-2 py-0.5 rounded-[2px] shrink-0">
+                              Đặt hàng
+                            </span>
+                          )}
+                        </div>
+
+                        <a
+                          href={`/products/${p.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-[14px] text-[#0b132b] hover:text-[#d97706] line-clamp-2 mt-1 block"
+                        >
+                          {p.name}
+                        </a>
+
+                        <div className="text-[12px] text-[#475569] mt-0.5">
+                          {p.category?.name || 'Vật tư'} • <strong className="text-[#0b132b]">{p.brand}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {(p.is_featured || p.show_in_quick_specs || p.has_cocq) && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {p.has_cocq && (
+                          <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3" /> CO/CQ
+                          </span>
+                        )}
+                        {p.is_featured && (
+                          <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                            Nổi bật
+                          </span>
+                        )}
+                        {p.show_in_quick_specs && (
+                          <span className="bg-slate-100 text-[#0b132b] border border-[#dce2ea] text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                            Bảng nhanh #{p.quick_spec_order ?? 0}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <a
+                        href={`/products/${p.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-w-[44px] min-h-[40px] px-3 border border-[#dce2ea] text-[#475569] hover:text-[#0b132b] rounded-[4px] inline-flex items-center justify-center gap-1.5 text-[12px] font-medium"
+                        title="Xem trang chi tiết ngoài web"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        <span>Xem</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(p)}
+                        className="flex-1 min-h-[40px] px-3 bg-[#f8fafc] border border-[#dce2ea] hover:bg-[#dce2ea] text-[#0b132b] rounded-[4px] text-[12px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        <span>Chỉnh sửa</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteProduct(p.id)}
+                        className="min-w-[44px] min-h-[40px] px-3 border border-red-200 text-red-600 hover:bg-red-50 rounded-[4px] inline-flex items-center justify-center transition-colors cursor-pointer"
+                        aria-label={`Xóa ${p.name}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
               <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
                 <tr>
                   <th className="py-3 px-4 w-[80px]">Hình ảnh</th>
@@ -380,14 +502,15 @@ export default function AdminProductsPage() {
                 })}
               </tbody>
             </table>
-          </div>
+            </div>
+          </>
         )}
 
         {/* Pagination */}
         {pagination.last_page > 1 && (
-          <div className="p-4 border-t border-[#dce2ea] flex items-center justify-between text-[12px] text-[#475569]">
+          <div className="p-4 border-t border-[#dce2ea] flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-[#475569]">
             <span>Tổng số {pagination.total} sản phẩm</span>
-            <div className="flex gap-1.5">
+            <div className="flex flex-wrap justify-center gap-1.5">
               {Array.from({ length: pagination.last_page }).map((_, idx) => {
                 const pg = idx + 1;
                 return (

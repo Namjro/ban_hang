@@ -65,29 +65,31 @@ export default function ProductSpecsSection({ form, onChange }: ProductSpecsSect
 
         <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
           {form.specRows.map((row, idx) => (
-            <div key={idx} className="flex items-center gap-2">
+            <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0">
               <input
                 type="text"
                 value={row.key}
                 onChange={(e) => handleUpdateSpecRow(idx, 'key', e.target.value)}
                 placeholder="Tên thông số (vd: Hành trình X/Y/Z)"
-                className="w-1/2 bg-white border border-[#dce2ea] rounded-[4px] p-2 text-[12px] focus:outline-none focus:border-[#0b132b]"
+                className="w-full sm:flex-1 min-w-0 bg-white border border-[#dce2ea] rounded-[4px] p-2 text-[16px] sm:text-[12px] focus:outline-none focus:border-[#0b132b]"
               />
-              <input
-                type="text"
-                value={row.value}
-                onChange={(e) => handleUpdateSpecRow(idx, 'value', e.target.value)}
-                placeholder="Giá trị (vd: 800 x 500 x 550 mm)"
-                className="w-1/2 bg-white border border-[#dce2ea] rounded-[4px] p-2 text-[12px] focus:outline-none focus:border-[#0b132b]"
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveSpecRow(idx)}
-                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-[4px] shrink-0 cursor-pointer"
-                title="Xóa thông số này"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2 w-full sm:flex-1 min-w-0">
+                <input
+                  type="text"
+                  value={row.value}
+                  onChange={(e) => handleUpdateSpecRow(idx, 'value', e.target.value)}
+                  placeholder="Giá trị (vd: 800 x 500 x 550 mm)"
+                  className="flex-1 min-w-0 bg-white border border-[#dce2ea] rounded-[4px] p-2 text-[16px] sm:text-[12px] focus:outline-none focus:border-[#0b132b]"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveSpecRow(idx)}
+                  className="p-2 min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 rounded-[4px] shrink-0 cursor-pointer"
+                  title="Xóa thông số này"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -124,18 +126,18 @@ export default function ProductSpecsSection({ form, onChange }: ProductSpecsSect
           })}
         </div>
 
-        <div className="flex gap-2 items-center pt-1">
+        <div className="flex flex-col sm:flex-row gap-2 sm:items-center pt-1 min-w-0">
           <input
             type="text"
             value={form.customCertInput}
             onChange={(e) => onChange({ customCertInput: e.target.value })}
             placeholder="Nhập tên chứng chỉ tiêu chuẩn khác..."
-            className="flex-1 bg-white border border-[#dce2ea] rounded-[4px] px-3 py-1.5 text-[12px] focus:outline-none focus:border-[#0b132b]"
+            className="w-full sm:flex-1 min-w-0 bg-white border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[12px] focus:outline-none focus:border-[#0b132b]"
           />
           <button
             type="button"
             onClick={handleAddCustomCert}
-            className="bg-white border border-[#dce2ea] hover:border-[#0b132b] text-[#0b132b] text-[12px] px-3 py-1.5 rounded-[4px] font-medium shrink-0 cursor-pointer"
+            className="bg-white border border-[#dce2ea] hover:border-[#0b132b] text-[#0b132b] text-[12px] px-3 py-2 rounded-[4px] font-medium shrink-0 cursor-pointer"
           >
             + Thêm Chứng Chỉ
           </button>

@@ -13,6 +13,8 @@ import {
   ShieldCheck,
   FolderTree,
   Settings,
+  Menu,
+  X,
 } from 'lucide-react';
 import { authService } from '@/services';
 import { authStorage } from '@/lib/auth-storage';
@@ -22,6 +24,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const [userName, setUserName] = useState('Administrator');
   const [mounted, setMounted] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -37,6 +40,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     }
   }, [pathname, router]);
+
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileSidebarOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileSidebarOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileSidebarOpen]);
 
   const handleLogout = async () => {
     try {
@@ -64,10 +80,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Cài Đặt Website', href: '/admin/settings', icon: Settings },
   ];
 
+  const pageTitle =
+    pathname === '/admin/dashboard'
+      ? 'Tổng Quan'
+      : pathname === '/admin/quotes'
+        ? 'Yêu Cầu Báo Giá'
+        : pathname === '/admin/categories'
+          ? 'Quản Lý Danh Mục'
+          : pathname === '/admin/settings'
+            ? 'Cài Đặt Website'
+            : 'Quản Lý Sản Phẩm';
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex">
+    <div className="min-h-screen bg-[#f8fafc] flex overflow-x-hidden">
+      {/* Mobile Backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-[#0b132b]/60 backdrop-blur-[2px] lg:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-[260px] bg-[#0b132b] text-white flex flex-col justify-between shrink-0 border-r border-[#152039] fixed top-0 bottom-0 left-0 z-30">
+      <aside
+        className={`w-[260px] bg-[#0b132b] text-white flex flex-col justify-between shrink-0 border-r border-[#152039] fixed inset-y-0 left-0 z-40 transform transition-transform duration-200 ease-out overflow-y-auto ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
         <div>
           {/* Brand */}
           <div className="h-[72px] px-6 border-b border-[#152039] flex items-center justify-between">
@@ -93,6 +133,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </span>
               </div>
             </Link>
+
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(false)}
+              aria-label="Đóng menu quản trị"
+              className="lg:hidden min-w-[40px] min-h-[40px] inline-flex items-center justify-center rounded-[4px] text-[#94a3b8] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* Navigation */}
@@ -163,32 +212,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 ml-[260px] min-h-screen flex flex-col">
+      <div className="flex-1 lg:ml-[260px] min-w-0 min-h-screen flex flex-col">
         {/* Topbar */}
-        <header className="h-[72px] bg-white border-b border-[#dce2ea] px-8 flex items-center justify-between sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-[13px] text-[#475569]">
-            <span>CMS</span>
-            <span>/</span>
-            <span className="font-semibold text-[#0b132b]">
-              {pathname === '/admin/dashboard'
-                ? 'Tổng Quan'
-                : pathname === '/admin/quotes'
-                  ? 'Yêu Cầu Báo Giá'
-                  : pathname === '/admin/categories'
-                    ? 'Quản Lý Danh Mục'
-                    : 'Quản Lý Sản Phẩm'}
-            </span>
+        <header className="h-[64px] sm:h-[72px] bg-white border-b border-[#dce2ea] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sticky top-0 z-20">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(true)}
+              aria-label="Mở menu quản trị"
+              className="lg:hidden min-w-[44px] min-h-[44px] -ml-1.5 inline-flex items-center justify-center rounded-[4px] border border-[#dce2ea] bg-[#f8fafc] text-[#0b132b] hover:bg-[#dce2ea]/60 transition-colors cursor-pointer shrink-0"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2 text-[13px] text-[#475569] min-w-0">
+              <span className="hidden sm:inline">CMS</span>
+              <span className="hidden sm:inline">/</span>
+              <span className="font-semibold text-[#0b132b] truncate">{pageTitle}</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[12px] bg-[#f8fafc] border border-[#dce2ea] px-2.5 py-1 rounded-[4px] text-[#475569]">
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="hidden sm:inline-flex text-[12px] bg-[#f8fafc] border border-[#dce2ea] px-2.5 py-1 rounded-[4px] text-[#475569]">
               Laravel 12 API • PHP 8.2.35
             </span>
           </div>
         </header>
 
         {/* Page Body */}
-        <main className="p-8 flex-1">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8 flex-1 min-w-0">{children}</main>
       </div>
     </div>
   );

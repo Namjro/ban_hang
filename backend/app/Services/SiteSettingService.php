@@ -39,6 +39,23 @@ class SiteSettingService
             'image_url'     => '/assets/images/cnc-machinery.png',
             'caption_left'  => 'GIA CÔNG • DỤNG CỤ • ĐO LƯỜNG',
             'caption_right' => 'ISO 9001 / CO-CQ',
+            'slides'        => [
+                [
+                    'image_url'     => '/assets/images/cnc-machinery.png',
+                    'caption_left'  => 'GIA CÔNG • DỤNG CỤ • ĐO LƯỜNG',
+                    'caption_right' => 'ISO 9001 / CO-CQ',
+                ],
+                [
+                    'image_url'     => '/assets/images/cat-cnc.png',
+                    'caption_left'  => 'MÁY CNC & MÁY CÔNG CỤ CHÍNH XÁC',
+                    'caption_right' => 'KHO SẴN HÀNG',
+                ],
+                [
+                    'image_url'     => '/assets/images/warehouse.png',
+                    'caption_left'  => 'KHO VẬN CÔNG NGHIỆP AXIOM',
+                    'caption_right' => 'GIAO HÀNG 24-48H',
+                ],
+            ],
         ],
         'trust_stats' => [
             'items' => [
@@ -139,6 +156,13 @@ class SiteSettingService
         $allowedKeys = array_keys(self::DEFAULTS[$group]);
         $filtered = array_intersect_key($data, array_flip($allowedKeys));
         $merged = array_merge($this->getGroup($group), $filtered);
+
+        if ($group === 'hero' && !empty($merged['slides']) && is_array($merged['slides'])) {
+            $firstSlide = $merged['slides'][0];
+            $merged['image_url'] = $firstSlide['image_url'] ?? $merged['image_url'];
+            $merged['caption_left'] = $firstSlide['caption_left'] ?? $merged['caption_left'];
+            $merged['caption_right'] = $firstSlide['caption_right'] ?? $merged['caption_right'];
+        }
 
         SiteSetting::updateOrCreate(['key' => $group], ['value' => $merged]);
         Cache::forget(self::CACHE_KEY);

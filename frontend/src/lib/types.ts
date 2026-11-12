@@ -196,6 +196,12 @@ export interface IconTextItem {
   text: string;
 }
 
+export interface HeroSlide {
+  image_url: string;
+  caption_left: string;
+  caption_right: string;
+}
+
 export interface HeroSettings {
   eyebrow: string;
   title: string;
@@ -205,6 +211,7 @@ export interface HeroSettings {
   image_url: string;
   caption_left: string;
   caption_right: string;
+  slides?: HeroSlide[];
 }
 
 export interface TrustStatItem {

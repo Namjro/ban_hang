@@ -88,6 +88,23 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     image_url: '/assets/images/cnc-machinery.png',
     caption_left: 'GIA CÔNG • DỤNG CỤ • ĐO LƯỜNG',
     caption_right: 'ISO 9001 / CO-CQ',
+    slides: [
+      {
+        image_url: '/assets/images/cnc-machinery.png',
+        caption_left: 'GIA CÔNG • DỤNG CỤ • ĐO LƯỜNG',
+        caption_right: 'ISO 9001 / CO-CQ',
+      },
+      {
+        image_url: '/assets/images/cat-cnc.png',
+        caption_left: 'MÁY CNC & MÁY CÔNG CỤ CHÍNH XÁC',
+        caption_right: 'KHO SẴN HÀNG',
+      },
+      {
+        image_url: '/assets/images/warehouse.png',
+        caption_left: 'KHO VẬN CÔNG NGHIỆP AXIOM',
+        caption_right: 'GIAO HÀNG 24-48H',
+      },
+    ],
   },
   trust_stats: {
     items: [

@@ -200,8 +200,8 @@ export default function AdminCategoriesPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-2 w-full sm:w-[360px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] focus-within:border-[#0b132b]">
+      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-2xs">
+        <div className="flex items-center gap-2 w-full sm:w-[360px] min-h-[44px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[13px] focus-within:border-[#0b132b]">
           <Search className="w-4 h-4 text-[#94a3b8] shrink-0" />
           <input
             type="text"
@@ -217,7 +217,7 @@ export default function AdminCategoriesPage() {
         </span>
       </div>
 
-      {/* Categories Table */}
+      {/* Categories List / Table */}
       <div className="bg-white border border-[#dce2ea] rounded-[8px] overflow-hidden shadow-xs">
         {loading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
@@ -231,8 +231,83 @@ export default function AdminCategoriesPage() {
             Không tìm thấy danh mục nào phù hợp với từ khóa tìm kiếm.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-[13px]">
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-[#dce2ea]">
+              {categories.map((c) => {
+                const IconComp = getCategoryIcon(c.icon);
+
+                return (
+                  <div key={c.id} className="p-4 flex flex-col gap-3">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-[4px] bg-[#0b132b] text-[#f59e0b] flex items-center justify-center shrink-0">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-[15px] text-[#0b132b] truncate">
+                            {c.name}
+                          </span>
+                          <span className="inline-block px-2 py-0.5 bg-[#f8fafc] border border-[#dce2ea] rounded-[3px] font-mono text-[11px] font-bold text-[#0b132b] shrink-0">
+                            #{c.order ?? 0}
+                          </span>
+                        </div>
+                        <div className="font-mono text-[11px] text-[#94a3b8] truncate mt-0.5">
+                          /{c.slug}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-[12px] text-[#475569] line-clamp-2 leading-relaxed">
+                      {c.description || 'Chưa có mô tả chi tiết cho danh mục này.'}
+                    </p>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <Link
+                        href={`/admin/products?category_id=${c.id}`}
+                        className="inline-flex items-center gap-1.5 bg-[#f8fafc] hover:bg-[#dce2ea] text-[#0b132b] font-semibold text-[12px] px-2.5 py-1.5 rounded-[3px] border border-[#dce2ea]"
+                      >
+                        <Package className="w-3.5 h-3.5 text-[#f59e0b]" />
+                        <span>{c.products_count ?? 0} SKU</span>
+                      </Link>
+
+                      <a
+                        href={`/products?category=${c.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[12px] text-[#475569] hover:text-[#0b132b] font-medium"
+                      >
+                        <span>Xem ngoài web</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEdit(c)}
+                        className="flex-1 min-h-[40px] px-3 bg-[#f8fafc] border border-[#dce2ea] hover:bg-[#dce2ea] text-[#0b132b] rounded-[4px] text-[12px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        <span>Chỉnh sửa</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCategory(c)}
+                        className="min-w-[44px] min-h-[40px] px-3 border border-red-200 text-red-600 hover:bg-red-50 rounded-[4px] inline-flex items-center justify-center transition-colors cursor-pointer"
+                        aria-label={`Xóa danh mục ${c.name}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
               <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
                 <tr>
                   <th className="py-3 px-4 w-[60px] text-center">Thứ Tự</th>
@@ -322,7 +397,8 @@ export default function AdminCategoriesPage() {
                 })}
               </tbody>
             </table>
-          </div>
+            </div>
+          </>
         )}
       </div>
 

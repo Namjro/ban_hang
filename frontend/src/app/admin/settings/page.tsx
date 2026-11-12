@@ -98,13 +98,13 @@ export default function AdminSettingsPage() {
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`px-5 py-3.5 text-[13px] font-semibold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+                className={`px-3.5 sm:px-5 py-3.5 min-h-[44px] text-[13px] font-semibold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                   active
                     ? 'border-[#0b132b] text-[#0b132b] bg-white'
                     : 'border-transparent text-[#475569] hover:text-[#0b132b]'
                 }`}
               >
-                <Icon className="w-4 h-4 text-[#f59e0b]" />
+                <Icon className="w-4 h-4 text-[#f59e0b] shrink-0" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -112,7 +112,7 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Form Body */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2.5 text-[#475569] text-[13px]">
               <Loader2 className="w-5 h-5 animate-spin text-[#0b132b]" />

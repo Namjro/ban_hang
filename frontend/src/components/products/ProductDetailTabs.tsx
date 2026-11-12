@@ -45,45 +45,45 @@ export default function ProductDetailTabs({
           <button
             type="button"
             onClick={() => setActiveTab('desc')}
-            className={`px-6 py-4 text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 min-h-[44px] text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'desc'
                 ? 'border-[#0b132b] text-[#0b132b] bg-white'
                 : 'border-transparent text-[#475569] hover:text-[#0b132b]'
             }`}
           >
-            <FileText className="w-4 h-4 text-[#f59e0b]" />
-            <span>Mô Tả Sản Phẩm & Ứng Dụng</span>
+            <FileText className="w-4 h-4 text-[#f59e0b] shrink-0" />
+            <span>Mô Tả<span className="hidden sm:inline"> Sản Phẩm &amp; Ứng Dụng</span></span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('specs')}
-            className={`px-6 py-4 text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 min-h-[44px] text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'specs'
                 ? 'border-[#0b132b] text-[#0b132b] bg-white'
                 : 'border-transparent text-[#475569] hover:text-[#0b132b]'
             }`}
           >
-            <Layers className="w-4 h-4 text-[#f59e0b]" />
-            <span>Bảng Thông Số Kỹ Thuật Chi Tiết ({specsEntries.length})</span>
+            <Layers className="w-4 h-4 text-[#f59e0b] shrink-0" />
+            <span>Thông Số<span className="hidden sm:inline"> Kỹ Thuật Chi Tiết</span> ({specsEntries.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('certs')}
-            className={`px-6 py-4 text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-3.5 sm:py-4 min-h-[44px] text-[13px] font-bold flex items-center gap-2 border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'certs'
                 ? 'border-[#0b132b] text-[#0b132b] bg-white'
                 : 'border-transparent text-[#475569] hover:text-[#0b132b]'
             }`}
           >
-            <Award className="w-4 h-4 text-[#f59e0b]" />
-            <span>Chứng Chỉ & Tiêu Chuẩn Xuất Xưởng ({certList.length})</span>
+            <Award className="w-4 h-4 text-[#f59e0b] shrink-0" />
+            <span>Chứng Chỉ<span className="hidden sm:inline"> &amp; Tiêu Chuẩn Xuất Xưởng</span> ({certList.length})</span>
           </button>
         </div>
 
         {/* Tab Body */}
-        <div className="p-6 sm:p-8">
+        <div className="p-4 sm:p-8">
           {/* TAB 1: Mô Tả */}
           {activeTab === 'desc' && (
             <div className="flex flex-col gap-6 max-w-[960px]">
@@ -128,9 +128,9 @@ export default function ProductDetailTabs({
           {/* TAB 2: Thông Số Kỹ Thuật */}
           {activeTab === 'specs' && (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between gap-4 pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
                 <div>
-                  <h3 className="text-[18px] font-bold text-[#0b132b]">
+                  <h3 className="text-[17px] sm:text-[18px] font-bold text-[#0b132b]">
                     Bảng Thông Số Kỹ Thuật (Engineering Specification Sheet)
                   </h3>
                   <p className="text-[13px] text-[#475569]">
@@ -142,7 +142,7 @@ export default function ProductDetailTabs({
                     href={product.datasheet_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#0b132b] hover:bg-[#152039] text-white text-[12px] font-semibold h-[38px] px-4 rounded-[4px] shrink-0 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 bg-[#0b132b] hover:bg-[#152039] text-white text-[12px] font-semibold min-h-[40px] px-4 rounded-[4px] shrink-0 transition-colors self-start sm:self-auto"
                   >
                     <FileDown className="w-4 h-4 text-[#f59e0b]" />
                     <span>Tải Spec Sheet (PDF)</span>
@@ -159,41 +159,41 @@ export default function ProductDetailTabs({
                   <table className="w-full text-left text-[13px]">
                     <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
                       <tr>
-                        <th className="py-3 px-5 w-1/3">Thuộc Tính Kỹ Thuật</th>
-                        <th className="py-3 px-5">Giá Trị / Tiêu Chuẩn Thực Tế</th>
+                        <th className="py-2.5 px-3.5 sm:py-3 sm:px-5 w-2/5 sm:w-1/3">Thuộc Tính Kỹ Thuật</th>
+                        <th className="py-2.5 px-3.5 sm:py-3 sm:px-5">Giá Trị / Tiêu Chuẩn Thực Tế</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#dce2ea]">
                       <tr className="hover:bg-[#f8fafc]">
-                        <td className="py-3 px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
                           Mã Định Danh (SKU)
                         </td>
-                        <td className="py-3 px-5 font-mono font-bold text-[#0b132b]">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-mono font-bold text-[#0b132b]">
                           {product.sku}
                         </td>
                       </tr>
                       <tr className="hover:bg-[#f8fafc]">
-                        <td className="py-3 px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
                           Nhà Sản Xuất / Thương Hiệu
                         </td>
-                        <td className="py-3 px-5 font-medium text-[#0b132b]">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-medium text-[#0b132b]">
                           {product.brand}
                         </td>
                       </tr>
                       <tr className="hover:bg-[#f8fafc]">
-                        <td className="py-3 px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
                           Nhóm Phân Loại
                         </td>
-                        <td className="py-3 px-5 text-[#475569]">
+                        <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 text-[#475569]">
                           {product.category?.name || 'Vật tư kỹ thuật'}
                         </td>
                       </tr>
                       {specsEntries.map(([key, val], idx) => (
                         <tr key={idx} className="hover:bg-[#f8fafc] transition-colors">
-                          <td className="py-3 px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
+                          <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 font-semibold text-[#0b132b] bg-[#f8fafc]/50">
                             {key}
                           </td>
-                          <td className="py-3 px-5 text-[#0b132b] font-medium">
+                          <td className="py-2.5 px-3.5 sm:py-3 sm:px-5 text-[#0b132b] font-medium">
                             {val}
                           </td>
                         </tr>

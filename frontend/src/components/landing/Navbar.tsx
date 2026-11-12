@@ -69,12 +69,12 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
           <Link href="/products" className="hover:text-amber-600 transition-colors py-2">
             Sản Phẩm
           </Link>
-          <a href="#quick-specs" className="hover:text-amber-600 transition-colors py-2">
+          <Link href="/#quick-specs" className="hover:text-amber-600 transition-colors py-2">
             Thông Số Kỹ Thuật
-          </a>
-          <a href="#capabilities" className="hover:text-amber-600 transition-colors py-2">
+          </Link>
+          <Link href="/#capabilities" className="hover:text-amber-600 transition-colors py-2">
             Năng Lực
-          </a>
+          </Link>
           <button
             type="button"
             onClick={onOpenQuoteModal}
@@ -136,7 +136,7 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm mã model, SKU, thông số..."
               aria-label="Tìm kiếm sản phẩm"
-              className="bg-transparent text-[14px] text-ink placeholder:text-ink-dim w-full focus:outline-none"
+              className="bg-transparent text-[16px] sm:text-[14px] text-ink placeholder:text-ink-dim w-full focus:outline-none"
             />
           </form>
 
@@ -149,20 +149,20 @@ export default function Navbar({ onOpenQuoteModal }: NavbarProps) {
               <span>Sản Phẩm</span>
               <ArrowUpRight className="w-4 h-4 text-ink-dim" />
             </Link>
-            <a
-              href="#quick-specs"
+            <Link
+              href="/#quick-specs"
               onClick={() => setMobileMenuOpen(false)}
               className="py-3 min-h-[44px] flex items-center hover:text-amber-600"
             >
               Thông Số Kỹ Thuật
-            </a>
-            <a
-              href="#capabilities"
+            </Link>
+            <Link
+              href="/#capabilities"
               onClick={() => setMobileMenuOpen(false)}
               className="py-3 min-h-[44px] flex items-center hover:text-amber-600"
             >
               Năng Lực Cung Ứng
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => {

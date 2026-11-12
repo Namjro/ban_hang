@@ -18,6 +18,7 @@ import { getApiErrorMessage } from '@/lib/error-handler';
 import { useDebounce } from '@/hooks/useDebounce';
 import QuoteDetailModal from '@/components/admin/QuoteDetailModal';
 import { useToast } from '@/components/ui/Toast';
+import SelectField from '@/components/ui/SelectField';
 
 export default function AdminQuotesPage() {
   const toast = useToast();
@@ -93,8 +94,8 @@ export default function AdminQuotesPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-center justify-between shadow-2xs">
-        <div className="flex items-center gap-2 w-full sm:w-[320px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] focus-within:border-[#0b132b]">
+      <div className="bg-white border border-[#dce2ea] rounded-[8px] p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-2xs">
+        <div className="flex items-center gap-2 w-full sm:w-[320px] min-h-[44px] bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[16px] sm:text-[13px] focus-within:border-[#0b132b]">
           <Search className="w-4 h-4 text-[#94a3b8] shrink-0" />
           <input
             type="text"
@@ -105,13 +106,13 @@ export default function AdminQuotesPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-[#475569]" />
-          <select
+        <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
+          <Filter className="w-4 h-4 text-[#475569] shrink-0" />
+          <SelectField
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="Lọc theo trạng thái"
-            className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] text-[#0b132b] focus:outline-none"
+            wrapperClassName="flex-1 sm:w-[220px]"
           >
             <option value="">Tất cả trạng thái</option>
             <option value="new">Mới nhận (Chưa xử lý)</option>
@@ -119,11 +120,11 @@ export default function AdminQuotesPage() {
             <option value="quoted">Đã gửi báo giá</option>
             <option value="completed">Hoàn tất / Đã chốt đơn</option>
             <option value="cancelled">Hủy / Không phản hồi</option>
-          </select>
+          </SelectField>
         </div>
       </div>
 
-      {/* Quotes Table */}
+      {/* Quotes List / Table */}
       <div className="bg-white border border-[#dce2ea] rounded-[8px] overflow-hidden shadow-xs">
         {loading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
@@ -135,67 +136,58 @@ export default function AdminQuotesPage() {
             Không tìm thấy yêu cầu báo giá nào phù hợp.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-[13px]">
-              <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
-                <tr>
-                  <th className="py-3 px-5">ID</th>
-                  <th className="py-3 px-5">Khách Hàng / Công Ty</th>
-                  <th className="py-3 px-5">Liên Hệ</th>
-                  <th className="py-3 px-5">SKU / Yêu Cầu</th>
-                  <th className="py-3 px-5">Trạng Thái</th>
-                  <th className="py-3 px-5">Thời Gian</th>
-                  <th className="py-3 px-5 text-right">Thao Tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#dce2ea]">
-                {quotes.map((q) => (
-                  <tr key={q.id} className="hover:bg-[#f8fafc] transition-colors">
-                    <td className="py-3 px-5 font-mono text-[#94a3b8]">#{q.id}</td>
-                    <td className="py-3 px-5">
-                      <div className="font-semibold text-[#0b132b]">{q.full_name}</div>
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-[#dce2ea]">
+              {quotes.map((q) => (
+                <div key={q.id} className="p-4 flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] text-[#94a3b8]">#{q.id}</span>
+                        <span className="font-semibold text-[15px] text-[#0b132b] truncate">
+                          {q.full_name}
+                        </span>
+                      </div>
                       {q.company_name && (
-                        <div className="text-[11px] text-[#475569]">{q.company_name}</div>
+                        <div className="text-[12px] text-[#475569] truncate mt-0.5">
+                          {q.company_name}
+                        </div>
                       )}
-                    </td>
-                    <td className="py-3 px-5">
-                      <div className="font-mono font-medium text-[#0b132b]">{q.phone}</div>
-                      {q.email && <div className="text-[11px] text-[#475569]">{q.email}</div>}
-                    </td>
-                    <td className="py-3 px-5 max-w-[240px]">
-                      {q.sku_target && (
-                        <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-1.5 py-0.5 rounded-[2px] text-[11px] font-semibold text-[#0b132b] block truncate mb-0.5">
-                          {q.sku_target}
-                        </span>
-                      )}
-                      <span className="text-[12px] text-[#475569] line-clamp-1">
-                        {q.requirement_content || 'Không ghi chú thêm'}
+                    </div>
+
+                    {q.status === 'new' ? (
+                      <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1 shrink-0">
+                        <Clock className="w-3 h-3" /> Mới
                       </span>
-                    </td>
-                    <td className="py-3 px-5">
-                      {q.status === 'new' ? (
-                        <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> Mới
-                        </span>
-                      ) : q.status === 'contacted' ? (
-                        <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
-                          <PhoneCall className="w-3 h-3" /> Đã gọi
-                        </span>
-                      ) : q.status === 'quoted' ? (
-                        <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
-                          <Send className="w-3 h-3" /> Đã báo giá
-                        </span>
-                      ) : q.status === 'completed' ? (
-                        <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" /> Hoàn tất
-                        </span>
-                      ) : (
-                        <span className="bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
-                          Hủy
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-5 text-[#94a3b8] text-[12px] whitespace-nowrap">
+                    ) : q.status === 'contacted' ? (
+                      <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1 shrink-0">
+                        <PhoneCall className="w-3 h-3" /> Đã gọi
+                      </span>
+                    ) : q.status === 'quoted' ? (
+                      <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1 shrink-0">
+                        <Send className="w-3 h-3" /> Đã báo giá
+                      </span>
+                    ) : q.status === 'completed' ? (
+                      <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1 shrink-0">
+                        <CheckCircle2 className="w-3 h-3" /> Hoàn tất
+                      </span>
+                    ) : (
+                      <span className="bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] shrink-0">
+                        Hủy
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[13px]">
+                    <a
+                      href={`tel:${q.phone}`}
+                      className="font-mono font-semibold text-[#0b132b] inline-flex items-center gap-1.5 underline decoration-[#dce2ea]"
+                    >
+                      <PhoneCall className="w-3.5 h-3.5 text-[#f59e0b]" />
+                      {q.phone}
+                    </a>
+                    <span className="text-[11px] text-[#94a3b8]">
                       {new Date(q.created_at).toLocaleString('vi-VN', {
                         day: '2-digit',
                         month: '2-digit',
@@ -203,30 +195,137 @@ export default function AdminQuotesPage() {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
-                    </td>
-                    <td className="py-3 px-5 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => setSelectedQuote(q)}
-                          className="p-1.5 text-[#0b132b] hover:bg-[#dce2ea] rounded-[4px] transition-colors cursor-pointer"
-                          title="Xem chi tiết & Xử lý"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteQuote(q.id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-[4px] transition-colors cursor-pointer"
-                          title="Xóa yêu cầu"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+                    </span>
+                  </div>
+
+                  {q.sku_target && (
+                    <div>
+                      <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-2 py-0.5 rounded-[2px] text-[11px] font-semibold text-[#0b132b] inline-block">
+                        {q.sku_target}
+                      </span>
+                    </div>
+                  )}
+
+                  <p className="text-[12px] text-[#475569] line-clamp-2">
+                    {q.requirement_content || 'Không ghi chú thêm'}
+                  </p>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedQuote(q)}
+                      className="flex-1 min-h-[40px] px-3 bg-[#0b132b] hover:bg-[#152039] text-white rounded-[4px] text-[12px] font-semibold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4 text-[#f59e0b]" />
+                      <span>Xem &amp; Xử lý</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteQuote(q.id)}
+                      className="min-w-[44px] min-h-[40px] px-3 border border-red-200 text-red-600 hover:bg-red-50 rounded-[4px] inline-flex items-center justify-center transition-colors cursor-pointer"
+                      aria-label={`Xóa yêu cầu #${q.id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-[13px]">
+                <thead className="bg-[#f8fafc] text-[#475569] text-[11px] font-semibold uppercase tracking-wider border-b border-[#dce2ea]">
+                  <tr>
+                    <th className="py-3 px-5">ID</th>
+                    <th className="py-3 px-5">Khách Hàng / Công Ty</th>
+                    <th className="py-3 px-5">Liên Hệ</th>
+                    <th className="py-3 px-5">SKU / Yêu Cầu</th>
+                    <th className="py-3 px-5">Trạng Thái</th>
+                    <th className="py-3 px-5">Thời Gian</th>
+                    <th className="py-3 px-5 text-right">Thao Tác</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-[#dce2ea]">
+                  {quotes.map((q) => (
+                    <tr key={q.id} className="hover:bg-[#f8fafc] transition-colors">
+                      <td className="py-3 px-5 font-mono text-[#94a3b8]">#{q.id}</td>
+                      <td className="py-3 px-5">
+                        <div className="font-semibold text-[#0b132b]">{q.full_name}</div>
+                        {q.company_name && (
+                          <div className="text-[11px] text-[#475569]">{q.company_name}</div>
+                        )}
+                      </td>
+                      <td className="py-3 px-5">
+                        <div className="font-mono font-medium text-[#0b132b]">{q.phone}</div>
+                        {q.email && <div className="text-[11px] text-[#475569]">{q.email}</div>}
+                      </td>
+                      <td className="py-3 px-5 max-w-[240px]">
+                        {q.sku_target && (
+                          <span className="font-mono bg-[#f8fafc] border border-[#dce2ea] px-1.5 py-0.5 rounded-[2px] text-[11px] font-semibold text-[#0b132b] block truncate mb-0.5">
+                            {q.sku_target}
+                          </span>
+                        )}
+                        <span className="text-[12px] text-[#475569] line-clamp-1">
+                          {q.requirement_content || 'Không ghi chú thêm'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-5">
+                        {q.status === 'new' ? (
+                          <span className="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> Mới
+                          </span>
+                        ) : q.status === 'contacted' ? (
+                          <span className="bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
+                            <PhoneCall className="w-3 h-3" /> Đã gọi
+                          </span>
+                        ) : q.status === 'quoted' ? (
+                          <span className="bg-purple-100 text-purple-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
+                            <Send className="w-3 h-3" /> Đã báo giá
+                          </span>
+                        ) : q.status === 'completed' ? (
+                          <span className="bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-[2px] text-[11px] inline-flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> Hoàn tất
+                          </span>
+                        ) : (
+                          <span className="bg-gray-100 text-gray-700 font-semibold px-2 py-0.5 rounded-[2px] text-[11px]">
+                            Hủy
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-5 text-[#94a3b8] text-[12px] whitespace-nowrap">
+                        {new Date(q.created_at).toLocaleString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className="py-3 px-5 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => setSelectedQuote(q)}
+                            className="p-1.5 text-[#0b132b] hover:bg-[#dce2ea] rounded-[4px] transition-colors cursor-pointer"
+                            title="Xem chi tiết & Xử lý"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteQuote(q.id)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-[4px] transition-colors cursor-pointer"
+                            title="Xóa yêu cầu"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

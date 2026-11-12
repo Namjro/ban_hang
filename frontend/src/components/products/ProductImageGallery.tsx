@@ -23,9 +23,9 @@ export default function ProductImageGallery({ product }: ProductImageGalleryProp
   const currentImage = imagesList[activeImageIndex] || imagesList[0] || SAMPLE_PRODUCT_IMAGES[0];
 
   return (
-    <div className="lg:col-span-5 bg-white border border-[#dce2ea] rounded-[8px] p-5 shadow-xs flex flex-col gap-4">
+    <div className="lg:col-span-5 bg-white border border-[#dce2ea] rounded-[8px] p-4 sm:p-5 shadow-xs flex flex-col gap-4">
       {/* Main Viewport */}
-      <div className="relative w-full h-[380px] sm:h-[440px] bg-[#f8fafc] rounded-[6px] border border-[#dce2ea] overflow-hidden flex items-center justify-center p-6 group">
+      <div className="relative w-full h-[280px] sm:h-[380px] lg:h-[440px] bg-[#f8fafc] rounded-[6px] border border-[#dce2ea] overflow-hidden flex items-center justify-center p-4 sm:p-6 group">
         <Image
           src={currentImage}
           alt={product.name}
@@ -69,7 +69,7 @@ export default function ProductImageGallery({ product }: ProductImageGalleryProp
               onClick={() =>
                 setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : imagesList.length - 1))
               }
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-[#dce2ea] text-[#0b132b] flex items-center justify-center hover:bg-[#0b132b] hover:text-white transition-colors cursor-pointer shadow-xs opacity-0 group-hover:opacity-100"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/95 border border-[#dce2ea] text-[#0b132b] flex items-center justify-center hover:bg-[#0b132b] hover:text-white transition-all cursor-pointer shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100"
               aria-label="Ảnh trước"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -79,7 +79,7 @@ export default function ProductImageGallery({ product }: ProductImageGalleryProp
               onClick={() =>
                 setActiveImageIndex((prev) => (prev < imagesList.length - 1 ? prev + 1 : 0))
               }
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-[#dce2ea] text-[#0b132b] flex items-center justify-center hover:bg-[#0b132b] hover:text-white transition-colors cursor-pointer shadow-xs opacity-0 group-hover:opacity-100"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/95 border border-[#dce2ea] text-[#0b132b] flex items-center justify-center hover:bg-[#0b132b] hover:text-white transition-all cursor-pointer shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100"
               aria-label="Ảnh kế tiếp"
             >
               <ChevronRight className="w-4 h-4" />
@@ -116,7 +116,7 @@ export default function ProductImageGallery({ product }: ProductImageGalleryProp
       )}
 
       {/* Quality & Origin Banner */}
-      <div className="bg-[#f8fafc] border border-[#dce2ea] rounded-[6px] p-3 flex items-center justify-between text-[12px] text-[#475569]">
+      <div className="bg-[#f8fafc] border border-[#dce2ea] rounded-[6px] p-3 flex flex-wrap items-center justify-between gap-2 text-[12px] text-[#475569]">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-[#10b981]" />
           <span>Hồ sơ CO/CQ đầy đủ</span>

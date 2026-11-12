@@ -16,6 +16,8 @@ import {
   getServerSiteSettings,
 } from '@/services/server-public.service';
 
+export const dynamic = 'force-dynamic';
+
 interface ProductsCatalogPageProps {
   searchParams: Promise<{
     category?: string;

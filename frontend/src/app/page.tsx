@@ -12,6 +12,8 @@ import {
   getServerSiteSettings,
 } from '@/services/server-public.service';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getServerSiteSettings();
   return buildHomeMetadata(settings);

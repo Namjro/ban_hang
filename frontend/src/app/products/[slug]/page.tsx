@@ -13,6 +13,8 @@ import {
   getServerSiteSettings,
 } from '@/services/server-public.service';
 
+export const dynamic = 'force-dynamic';
+
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
 }

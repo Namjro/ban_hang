@@ -9,6 +9,10 @@ use Illuminate\Support\Str;
 
 class CategoryService
 {
+    public function __construct(
+        protected SeoGeneratorService $seoGenerator
+    ) {}
+
     /**
      * Get public category list with product counts.
      * When $homeOnly is true, only categories flagged for the homepage are returned.
@@ -88,6 +92,7 @@ class CategoryService
 
         $data['order'] = $data['order'] ?? 0;
         $data['icon'] = $data['icon'] ?? 'folder';
+        $data = $this->seoGenerator->fillCategorySeo($data);
 
         $category = Category::create($data);
 
@@ -111,6 +116,20 @@ class CategoryService
             }
             $data['slug'] = $slug;
         }
+
+        $mergedForSeo = array_merge([
+            'name'             => $category->name,
+            'subtitle'         => $category->subtitle,
+            'description'      => $category->description,
+            'meta_title'       => $category->meta_title,
+            'meta_description' => $category->meta_description,
+            'meta_keywords'    => $category->meta_keywords,
+        ], $data);
+
+        $filledSeo = $this->seoGenerator->fillCategorySeo($mergedForSeo);
+        $data['meta_title'] = $filledSeo['meta_title'] ?? null;
+        $data['meta_description'] = $filledSeo['meta_description'] ?? null;
+        $data['meta_keywords'] = $filledSeo['meta_keywords'] ?? null;
 
         $category->update($data);
 

@@ -20,6 +20,9 @@ class StoreCategoryRequest extends BaseFormRequest
             'highlights.*.label'   => 'required|string|max:60',
             'highlights.*.value'   => 'required|string|max:200',
             'show_on_home'         => 'boolean',
+            'meta_title'           => 'nullable|string|max:255',
+            'meta_description'     => 'nullable|string|max:500',
+            'meta_keywords'        => 'nullable|string|max:500',
         ];
     }
 

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { Category, CategoryHighlight, CategoryPayload } from '@/lib/types';
 import ImageUploadField from '@/components/admin/shared/ImageUploadField';
+import SeoFieldsSection from '@/components/admin/shared/SeoFieldsSection';
+import { generateCategorySeoFallback } from '@/lib/seo';
 
 export const CATEGORY_ICON_OPTIONS = [
   { id: 'factory', label: 'Nhà máy / CNC', icon: Factory },
@@ -67,6 +69,9 @@ export default function CategoryFormModal({
     highlights: [] as CategoryHighlight[],
     show_on_home: true,
     order: defaultOrder,
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: '',
   });
 
   useEffect(() => {
@@ -82,6 +87,9 @@ export default function CategoryFormModal({
         highlights: Array.isArray(editingCategory.highlights) ? editingCategory.highlights : [],
         show_on_home: editingCategory.show_on_home ?? true,
         order: editingCategory.order || 0,
+        meta_title: editingCategory.meta_title || '',
+        meta_description: editingCategory.meta_description || '',
+        meta_keywords: editingCategory.meta_keywords || '',
       });
     } else {
       setForm({
@@ -97,6 +105,9 @@ export default function CategoryFormModal({
         ],
         show_on_home: true,
         order: defaultOrder,
+        meta_title: '',
+        meta_description: '',
+        meta_keywords: '',
       });
     }
   }, [isOpen, editingCategory, defaultOrder]);
@@ -139,8 +150,17 @@ export default function CategoryFormModal({
       highlights: cleanedHighlights,
       show_on_home: form.show_on_home,
       order: Number(form.order) || 0,
+      meta_title: form.meta_title.trim() || undefined,
+      meta_description: form.meta_description.trim() || undefined,
+      meta_keywords: form.meta_keywords.trim() || undefined,
     });
   };
+
+  const seoFallback = generateCategorySeoFallback({
+    name: form.name,
+    subtitle: form.subtitle,
+    description: form.description,
+  });
 
   const PreviewIcon = getCategoryIcon(form.icon);
 
@@ -358,6 +378,31 @@ export default function CategoryFormModal({
               Preview
             </span>
           </div>
+
+          {/* SEO Fields */}
+          <SeoFieldsSection
+            metaTitle={form.meta_title}
+            metaDescription={form.meta_description}
+            metaKeywords={form.meta_keywords}
+            onChangeMetaTitle={(meta_title) => setForm((prev) => ({ ...prev, meta_title }))}
+            onChangeMetaDescription={(meta_description) =>
+              setForm((prev) => ({ ...prev, meta_description }))
+            }
+            onChangeMetaKeywords={(meta_keywords) =>
+              setForm((prev) => ({ ...prev, meta_keywords }))
+            }
+            onAutoGenerate={() =>
+              setForm((prev) => ({
+                ...prev,
+                meta_title: seoFallback.meta_title,
+                meta_description: seoFallback.meta_description,
+                meta_keywords: seoFallback.meta_keywords,
+              }))
+            }
+            previewSlug={`/products?category=${form.slug || 'slug'}`}
+            fallbackTitle={seoFallback.meta_title}
+            fallbackDescription={seoFallback.meta_description}
+          />
 
           {/* Footer Buttons */}
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#dce2ea]">

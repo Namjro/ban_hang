@@ -17,6 +17,9 @@ export interface Category {
   image_url?: string | null;
   highlights?: CategoryHighlight[];
   show_on_home?: boolean;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
   order: number;
   products_count?: number;
   products?: Product[];
@@ -37,6 +40,9 @@ export interface Product {
   datasheet_url?: string | null;
   highlights?: string[] | null;
   packaging?: string[] | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
   description: string | null;
   specifications: Record<string, string> | null;
   spec_summary?: string | null;
@@ -160,6 +166,9 @@ export interface ProductPayload {
   datasheet_url?: string | null;
   highlights?: string[] | null;
   packaging?: string[] | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
   is_featured?: boolean;
   show_in_quick_specs?: boolean;
   quick_spec_order?: number;
@@ -174,6 +183,9 @@ export interface CategoryPayload {
   image_url?: string | null;
   highlights?: CategoryHighlight[];
   show_on_home?: boolean;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  meta_keywords?: string | null;
   order?: number;
 }
 

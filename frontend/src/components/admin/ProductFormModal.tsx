@@ -43,6 +43,9 @@ function buildInitialState(editingProduct: Product | null, categories: Category[
       quick_spec_order: 0,
       highlights: [],
       packaging: [],
+      meta_title: '',
+      meta_description: '',
+      meta_keywords: '',
       newImageUrl: '',
       customCertInput: '',
     };
@@ -84,6 +87,9 @@ function buildInitialState(editingProduct: Product | null, categories: Category[
     quick_spec_order: editingProduct.quick_spec_order ?? 0,
     highlights: Array.isArray(editingProduct.highlights) ? [...editingProduct.highlights] : [],
     packaging: Array.isArray(editingProduct.packaging) ? [...editingProduct.packaging] : [],
+    meta_title: editingProduct.meta_title || '',
+    meta_description: editingProduct.meta_description || '',
+    meta_keywords: editingProduct.meta_keywords || '',
     newImageUrl: '',
     customCertInput: '',
   };
@@ -145,6 +151,9 @@ export default function ProductFormModal({
       quick_spec_order: Number(form.quick_spec_order) || 0,
       highlights: cleanedHighlights.length > 0 ? cleanedHighlights : null,
       packaging: cleanedPackaging.length > 0 ? cleanedPackaging : null,
+      meta_title: form.meta_title.trim() || undefined,
+      meta_description: form.meta_description.trim() || undefined,
+      meta_keywords: form.meta_keywords.trim() || undefined,
     });
   };
 

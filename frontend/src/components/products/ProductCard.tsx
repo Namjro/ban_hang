@@ -28,7 +28,7 @@ export default function ProductCard({ product, index = 0, onRequestQuote }: Prod
         >
           <Image
             src={primaryImg}
-            alt={product.name}
+            alt={`${product.name} - Mã ${product.sku} - ${product.brand}`}
             fill
             unoptimized={primaryImg.startsWith('data:') || primaryImg.startsWith('http')}
             className="object-contain p-3"

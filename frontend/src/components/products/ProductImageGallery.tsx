@@ -28,7 +28,7 @@ export default function ProductImageGallery({ product }: ProductImageGalleryProp
       <div className="relative w-full h-[280px] sm:h-[380px] lg:h-[440px] bg-[#f8fafc] rounded-[6px] border border-[#dce2ea] overflow-hidden flex items-center justify-center p-4 sm:p-6 group">
         <Image
           src={currentImage}
-          alt={product.name}
+          alt={`${product.name} - Mã ${product.sku} - ${product.brand}`}
           fill
           priority
           unoptimized={currentImage.startsWith('data:') || currentImage.startsWith('http')}

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,7 +12,8 @@ use Illuminate\Support\Str;
 class ProductService
 {
     public function __construct(
-        protected MediaService $mediaService
+        protected MediaService $mediaService,
+        protected SeoGeneratorService $seoGenerator
     ) {}
 
     /**
@@ -120,6 +122,17 @@ class ProductService
     }
 
     /**
+     * Get lightweight product entries for XML sitemap generation.
+     */
+    public function getSitemapProducts(): Collection
+    {
+        return Product::query()
+            ->select(['id', 'slug', 'name', 'image_url', 'updated_at'])
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    /**
      * Get admin products with search, category/stock filtering, and pagination.
      */
     public function getAdminProducts(array $filters): LengthAwarePaginator
@@ -173,6 +186,9 @@ class ProductService
             $data['images'] = [$data['image_url']];
         }
 
+        $category = isset($data['category_id']) ? Category::find($data['category_id']) : null;
+        $data = $this->seoGenerator->fillProductSeo($data, $category);
+
         $product = Product::create($data);
 
         return $product->load('category');
@@ -183,7 +199,7 @@ class ProductService
      */
     public function updateProduct(int $id, array $data): Product
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
 
         if (isset($data['name']) || isset($data['sku'])) {
             $name = $data['name'] ?? $product->name;
@@ -194,6 +210,26 @@ class ProductService
         if (isset($data['images']) && !empty($data['images']) && empty($data['image_url'])) {
             $data['image_url'] = $data['images'][0];
         }
+
+        $category = isset($data['category_id'])
+            ? Category::find($data['category_id'])
+            : $product->category;
+
+        $mergedForSeo = array_merge([
+            'name'             => $product->name,
+            'sku'              => $product->sku,
+            'brand'            => $product->brand,
+            'spec_summary'     => $product->spec_summary,
+            'description'      => $product->description,
+            'meta_title'       => $product->meta_title,
+            'meta_description' => $product->meta_description,
+            'meta_keywords'    => $product->meta_keywords,
+        ], $data);
+
+        $filledSeo = $this->seoGenerator->fillProductSeo($mergedForSeo, $category);
+        $data['meta_title'] = $filledSeo['meta_title'] ?? null;
+        $data['meta_description'] = $filledSeo['meta_description'] ?? null;
+        $data['meta_keywords'] = $filledSeo['meta_keywords'] ?? null;
 
         $product->update($data);
 

@@ -60,4 +60,19 @@ class ProductController extends Controller
             'data'    => $this->productService->getPublicBrands(),
         ]);
     }
+
+    public function sitemap(): JsonResponse
+    {
+        $products = $this->productService->getSitemapProducts()->map(fn ($product) => [
+            'slug'       => $product->slug,
+            'name'       => $product->name,
+            'image_url'  => $product->image_url,
+            'updated_at' => $product->updated_at?->toISOString(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data'    => $products,
+        ]);
+    }
 }

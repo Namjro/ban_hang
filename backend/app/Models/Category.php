@@ -20,6 +20,9 @@ class Category extends Model
         'image_url',
         'highlights',
         'show_on_home',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [

@@ -23,6 +23,9 @@ export interface ProductFormState {
   quick_spec_order: number;
   highlights: string[];
   packaging: string[];
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
   newImageUrl: string;
   customCertInput: string;
 }

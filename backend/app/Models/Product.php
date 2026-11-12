@@ -31,6 +31,9 @@ class Product extends Model
         'datasheet_url',
         'highlights',
         'packaging',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
     ];
 
     protected $casts = [

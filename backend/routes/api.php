@@ -22,6 +22,7 @@ Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/quick-specs', [ProductController::class, 'quickSpecs']);
     Route::get('/brands', [ProductController::class, 'brands']);
+    Route::get('/sitemap', [ProductController::class, 'sitemap']);
     Route::get('/{identifier}', [ProductController::class, 'show']);
 });
 

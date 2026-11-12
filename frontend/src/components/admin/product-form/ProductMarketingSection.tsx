@@ -3,6 +3,8 @@
 import React from 'react';
 import { Star, Table2 } from 'lucide-react';
 import RepeatableStringList from '@/components/admin/shared/RepeatableStringList';
+import SeoFieldsSection from '@/components/admin/shared/SeoFieldsSection';
+import { generateProductSeoFallback } from '@/lib/seo';
 import { ProductFormState } from './types';
 
 interface ProductMarketingSectionProps {
@@ -14,6 +16,21 @@ export default function ProductMarketingSection({
   form,
   onChange,
 }: ProductMarketingSectionProps) {
+  const fallback = generateProductSeoFallback({
+    name: form.name,
+    sku: form.sku,
+    brand: form.brand,
+    spec_summary: form.spec_summary,
+    description: form.description,
+  });
+
+  const handleAutoGenerateSeo = () => {
+    onChange({
+      meta_title: fallback.meta_title,
+      meta_description: fallback.meta_description,
+      meta_keywords: fallback.meta_keywords,
+    });
+  };
   return (
     <div className="border border-[#dce2ea] rounded-[6px] p-4 bg-[#f8fafc] flex flex-col gap-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -88,6 +105,19 @@ export default function ProductMarketingSection({
           helperText="Để trống nếu dùng nội dung mặc định toàn website."
         />
       </div>
+
+      <SeoFieldsSection
+        metaTitle={form.meta_title}
+        metaDescription={form.meta_description}
+        metaKeywords={form.meta_keywords}
+        onChangeMetaTitle={(meta_title) => onChange({ meta_title })}
+        onChangeMetaDescription={(meta_description) => onChange({ meta_description })}
+        onChangeMetaKeywords={(meta_keywords) => onChange({ meta_keywords })}
+        onAutoGenerate={handleAutoGenerateSeo}
+        previewSlug={`/products/${form.sku ? form.sku.toLowerCase() : 'san-pham'}`}
+        fallbackTitle={fallback.meta_title}
+        fallbackDescription={fallback.meta_description}
+      />
     </div>
   );
 }

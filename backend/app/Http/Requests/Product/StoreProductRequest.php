@@ -32,6 +32,9 @@ class StoreProductRequest extends BaseFormRequest
             'highlights.*'        => 'string|max:200',
             'packaging'           => 'nullable|array|max:10',
             'packaging.*'         => 'string|max:200',
+            'meta_title'          => 'nullable|string|max:255',
+            'meta_description'    => 'nullable|string|max:500',
+            'meta_keywords'       => 'nullable|string|max:500',
         ];
     }
 }

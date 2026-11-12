@@ -196,7 +196,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </span>
               <span className="text-[10px] text-[#10b981] flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" />
-                JWT Session
+                Phiên làm việc an toàn
               </span>
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           <div className="flex items-center gap-3 shrink-0">
             <span className="hidden sm:inline-flex text-[12px] bg-[#f8fafc] border border-[#dce2ea] px-2.5 py-1 rounded-[4px] text-[#475569]">
-              Laravel 12 API • PHP 8.2.35
+              Cổng Quản trị AXIOM
             </span>
           </div>
         </header>

@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
           <div className="flex flex-col gap-1 border-b border-[#dce2ea] pb-4">
             <h1 className="text-[20px] font-bold text-[#0b132b]">Đăng nhập Quản trị</h1>
             <span className="text-[12px] text-[#475569]">
-              Xác thực bảo mật phiên làm việc qua JWT Token
+              Xác thực bảo mật phiên làm việc quản trị
             </span>
           </div>
 
@@ -142,7 +142,7 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-[#f59e0b]" />
-                  <span>Đang xác thực JWT...</span>
+                  <span>Đang xác thực...</span>
                 </>
               ) : (
                 <>
@@ -156,7 +156,7 @@ export default function AdminLoginPage() {
           <div className="pt-2 border-t border-[#dce2ea] flex items-center justify-between text-[11px] text-[#475569]">
             <span className="flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
-              Laravel 12 JWT Protected
+              Bảo mật hệ thống quản trị
             </span>
             <Link href="/" className="hover:text-[#0b132b] transition-colors underline">
               Quay lại Trang chủ

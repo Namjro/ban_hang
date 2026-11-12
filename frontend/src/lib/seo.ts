@@ -289,14 +289,15 @@ export function buildBreadcrumbJsonLd(
   items: Array<{ name: string; path: string }>
 ) {
   const siteUrl = getSiteUrl();
+  const safeItems = Array.isArray(items) ? items : [];
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, idx) => ({
+    itemListElement: safeItems.map((item, idx) => ({
       '@type': 'ListItem',
       position: idx + 1,
-      name: item.name,
-      item: `${siteUrl}${item.path}`,
+      name: item?.name || '',
+      item: `${siteUrl}${item?.path || ''}`,
     })),
   };
 }
@@ -305,9 +306,10 @@ export function buildCollectionPageJsonLd(options: {
   title: string;
   description: string;
   path: string;
-  products: Product[];
+  products?: Product[];
 }) {
   const siteUrl = getSiteUrl();
+  const safeProducts = Array.isArray(options.products) ? options.products : [];
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -316,11 +318,11 @@ export function buildCollectionPageJsonLd(options: {
     url: `${siteUrl}${options.path}`,
     mainEntity: {
       '@type': 'ItemList',
-      itemListElement: options.products.slice(0, 12).map((product, index) => ({
+      itemListElement: safeProducts.slice(0, 12).map((product, index) => ({
         '@type': 'ListItem',
         position: index + 1,
-        url: `${siteUrl}/products/${product.slug}`,
-        name: product.name,
+        url: `${siteUrl}/products/${product?.slug || ''}`,
+        name: product?.name || '',
       })),
     },
   };

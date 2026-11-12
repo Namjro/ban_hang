@@ -21,46 +21,46 @@ import { Product, Category, PaginationMeta, SiteSettings } from '@/lib/types';
 import { useDebounce } from '@/hooks/useDebounce';
 
 interface ProductsCatalogClientProps {
-  initialProducts: Product[];
-  initialPagination: PaginationMeta;
-  initialCategories: Category[];
-  initialBrands: string[];
-  initialCategorySlug: string;
-  initialSearch: string;
-  initialBrand: string;
-  initialStockStatus: string;
-  siteSettings: SiteSettings;
+  initialProducts?: Product[];
+  initialPagination?: PaginationMeta;
+  initialCategories?: Category[];
+  initialBrands?: string[];
+  initialCategorySlug?: string;
+  initialSearch?: string;
+  initialBrand?: string;
+  initialStockStatus?: string;
+  siteSettings?: SiteSettings;
 }
 
 export default function ProductsCatalogClient({
-  initialProducts,
+  initialProducts = [],
   initialPagination,
-  initialCategories,
-  initialBrands,
-  initialCategorySlug,
-  initialSearch,
-  initialBrand,
-  initialStockStatus,
+  initialCategories = [],
+  initialBrands = [],
+  initialCategorySlug = '',
+  initialSearch = '',
+  initialBrand = '',
+  initialStockStatus = '',
   siteSettings,
 }: ProductsCatalogClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [categories] = useState<Category[]>(initialCategories);
-  const [brands] = useState<string[]>(initialBrands);
+  const [products, setProducts] = useState<Product[]>(initialProducts || []);
+  const [categories] = useState<Category[]>(initialCategories || []);
+  const [brands] = useState<string[]>(initialBrands || []);
   const [loading, setLoading] = useState(false);
   const [, startTransition] = useTransition();
 
-  const [search, setSearch] = useState(initialSearch);
+  const [search, setSearch] = useState(initialSearch || '');
   const debouncedSearch = useDebounce(search, 300);
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategorySlug);
-  const [selectedStock, setSelectedStock] = useState<string>(initialStockStatus);
-  const [selectedBrand, setSelectedBrand] = useState<string>(initialBrand);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategorySlug || '');
+  const [selectedStock, setSelectedStock] = useState<string>(initialStockStatus || '');
+  const [selectedBrand, setSelectedBrand] = useState<string>(initialBrand || '');
   const [pagination, setPagination] = useState({
-    total: initialPagination.total,
-    current_page: initialPagination.current_page,
-    last_page: initialPagination.last_page,
+    total: initialPagination?.total ?? 0,
+    current_page: initialPagination?.current_page ?? 1,
+    last_page: initialPagination?.last_page ?? 1,
   });
 
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
@@ -136,7 +136,7 @@ export default function ProductsCatalogClient({
     setIsQuoteModalOpen(true);
   };
 
-  const activeCategoryObj = categories.find((c) => c.slug === selectedCategory);
+  const activeCategoryObj = (categories || []).find((c) => c?.slug === selectedCategory);
   const pageHeading = activeCategoryObj ? activeCategoryObj.name : 'Tất cả sản phẩm';
   const pageSubheading = activeCategoryObj?.description
     ? activeCategoryObj.description
@@ -334,7 +334,7 @@ export default function ProductsCatalogClient({
         </div>
       </main>
 
-      <Footer company={siteSettings.company} categories={categories} />
+      <Footer company={siteSettings?.company} categories={categories} />
 
       <FloatingContactBubble
         onClick={() => {

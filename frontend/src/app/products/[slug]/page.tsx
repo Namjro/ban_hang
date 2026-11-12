@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ProductDetailClient from '@/components/products/ProductDetailClient';
 import JsonLd from '@/components/seo/JsonLd';
+import { DEFAULT_SITE_SETTINGS } from '@/constants';
 import {
   buildBreadcrumbJsonLd,
   buildProductJsonLd,
@@ -22,30 +23,49 @@ interface ProductDetailPageProps {
 export async function generateMetadata({
   params,
 }: ProductDetailPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const [productRes, siteSettings] = await Promise.all([
-    getServerProductBySlug(slug),
-    getServerSiteSettings(),
-  ]);
+  try {
+    const { slug } = await params;
+    const [productRes, siteSettings] = await Promise.all([
+      getServerProductBySlug(slug).catch(() => null),
+      getServerSiteSettings().catch(() => DEFAULT_SITE_SETTINGS),
+    ]);
 
-  if (!productRes?.data) {
+    if (!productRes?.data) {
+      return {
+        title: 'Chi Tiết Sản Phẩm | AXIOM',
+        description: 'Xem thông số kỹ thuật và báo giá thiết bị công nghiệp chính hãng tại AXIOM.',
+        robots: { index: false, follow: false },
+      };
+    }
+
+    return buildProductMetadata(productRes.data, siteSettings || DEFAULT_SITE_SETTINGS);
+  } catch (err) {
+    console.error('Failed to generate product metadata', err);
     return {
-      title: 'Không tìm thấy sản phẩm | AXIOM',
+      title: 'Thiết Bị Công Nghiệp Chính Hãng | AXIOM',
       robots: { index: false, follow: false },
     };
   }
-
-  return buildProductMetadata(productRes.data, siteSettings);
 }
 
 export default async function ProductDetailPage({
   params,
 }: ProductDetailPageProps) {
-  const { slug } = await params;
+  let slug = '';
+  try {
+    const resolved = await params;
+    slug = resolved?.slug || '';
+  } catch {
+    notFound();
+  }
+
+  if (!slug) {
+    notFound();
+  }
 
   const [productRes, siteSettings] = await Promise.all([
-    getServerProductBySlug(slug),
-    getServerSiteSettings(),
+    getServerProductBySlug(slug).catch(() => null),
+    getServerSiteSettings().catch(() => DEFAULT_SITE_SETTINGS),
   ]);
 
   if (!productRes?.data) {
@@ -53,7 +73,10 @@ export default async function ProductDetailPage({
   }
 
   const product = productRes.data;
-  const relatedProducts = productRes.related_products || [];
+  const relatedProducts = Array.isArray(productRes.related_products)
+    ? productRes.related_products
+    : [];
+  const safeSettings = siteSettings || DEFAULT_SITE_SETTINGS;
 
   const breadcrumbItems = [
     { name: 'Trang chủ', path: '/' },
@@ -70,7 +93,7 @@ export default async function ProductDetailPage({
     path: `/products/${encodeURIComponent(product.slug)}`,
   });
 
-  const productJsonLd = buildProductJsonLd(product, siteSettings.company);
+  const productJsonLd = buildProductJsonLd(product, safeSettings.company);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd(breadcrumbItems);
 
   return (
@@ -80,7 +103,7 @@ export default async function ProductDetailPage({
       <ProductDetailClient
         product={product}
         relatedProducts={relatedProducts}
-        settings={siteSettings}
+        settings={safeSettings}
       />
     </>
   );

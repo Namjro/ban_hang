@@ -5,6 +5,7 @@ interface JsonLdProps {
 }
 
 export default function JsonLd({ data }: JsonLdProps) {
+  if (!data) return null;
   return (
     <script
       type="application/ld+json"

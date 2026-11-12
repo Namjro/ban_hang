@@ -26,25 +26,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const categories = await getServerPublicCategories();
-  const categoryRoutes: MetadataRoute.Sitemap = categories
-    .filter((cat) => Boolean(cat.slug))
-    .map((cat) => ({
-      url: `${siteUrl}/products?category=${encodeURIComponent(cat.slug)}`,
-      lastModified: cat.updated_at ? new Date(cat.updated_at) : now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-    }));
+  try {
+    const [categories, products] = await Promise.all([
+      getServerPublicCategories().catch(() => []),
+      getServerSitemapProducts().catch(() => []),
+    ]);
 
-  const products = await getServerSitemapProducts();
-  const productRoutes: MetadataRoute.Sitemap = products
-    .filter((prod) => Boolean(prod.slug))
-    .map((prod) => ({
-      url: `${siteUrl}/products/${encodeURIComponent(prod.slug)}`,
-      lastModified: prod.updated_at ? new Date(prod.updated_at) : now,
-      changeFrequency: 'daily',
-      priority: 0.9,
-    }));
+    const categoryRoutes: MetadataRoute.Sitemap = (Array.isArray(categories) ? categories : [])
+      .filter((cat) => Boolean(cat?.slug))
+      .map((cat) => ({
+        url: `${siteUrl}/products?category=${encodeURIComponent(cat.slug)}`,
+        lastModified: cat.updated_at ? new Date(cat.updated_at) : now,
+        changeFrequency: 'weekly',
+        priority: 0.85,
+      }));
 
-  return [...staticRoutes, ...categoryRoutes, ...productRoutes];
+    const productRoutes: MetadataRoute.Sitemap = (Array.isArray(products) ? products : [])
+      .filter((prod) => Boolean(prod?.slug))
+      .map((prod) => ({
+        url: `${siteUrl}/products/${encodeURIComponent(prod.slug)}`,
+        lastModified: prod.updated_at ? new Date(prod.updated_at) : now,
+        changeFrequency: 'daily',
+        priority: 0.9,
+      }));
+
+    return [...staticRoutes, ...categoryRoutes, ...productRoutes];
+  } catch (err) {
+    console.error('Failed to generate dynamic sitemap entries', err);
+    return staticRoutes;
+  }
 }

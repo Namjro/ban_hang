@@ -286,6 +286,20 @@ export default function AdminProductsPage() {
                               .join(' • ')}
                           </div>
                         )}
+                        {(p.is_featured || p.show_in_quick_specs) && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {p.is_featured && (
+                              <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                                Nổi bật
+                              </span>
+                            )}
+                            {p.show_in_quick_specs && (
+                              <span className="bg-slate-100 text-[#0b132b] border border-[#dce2ea] text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                                Bảng nhanh #{p.quick_spec_order ?? 0}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-3.5 px-4 text-[#475569] whitespace-nowrap">

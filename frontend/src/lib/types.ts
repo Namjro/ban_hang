@@ -2,12 +2,21 @@ export type StockStatus = 'in_stock' | 'low_stock' | 'pre_order';
 export type QuoteStatus = 'new' | 'contacted' | 'quoted' | 'completed' | 'cancelled';
 export type QuoteSource = 'landing_form' | 'contact_modal';
 
+export interface CategoryHighlight {
+  label: string;
+  value: string;
+}
+
 export interface Category {
   id: number;
   name: string;
+  subtitle?: string | null;
   slug: string;
   description: string | null;
   icon: string | null;
+  image_url?: string | null;
+  highlights?: CategoryHighlight[];
+  show_on_home?: boolean;
   order: number;
   products_count?: number;
   products?: Product[];
@@ -25,12 +34,18 @@ export interface Product {
   image_url: string | null;
   images?: string[] | null;
   certificates?: string[] | null;
+  datasheet_url?: string | null;
+  highlights?: string[] | null;
+  packaging?: string[] | null;
   description: string | null;
   specifications: Record<string, string> | null;
+  spec_summary?: string | null;
   stock_status: StockStatus;
   price_display: string;
   has_cocq: boolean;
   is_featured: boolean;
+  show_in_quick_specs?: boolean;
+  quick_spec_order?: number;
   category?: Category;
   created_at?: string;
   updated_at?: string;
@@ -139,18 +154,103 @@ export interface ProductPayload {
   image_url?: string;
   images?: string[];
   specifications?: Record<string, string>;
+  spec_summary?: string | null;
   has_cocq?: boolean;
   certificates?: string[];
+  datasheet_url?: string | null;
+  highlights?: string[] | null;
+  packaging?: string[] | null;
   is_featured?: boolean;
+  show_in_quick_specs?: boolean;
+  quick_spec_order?: number;
 }
 
 export interface CategoryPayload {
   name: string;
+  subtitle?: string | null;
   slug?: string;
   description?: string;
   icon?: string;
+  image_url?: string | null;
+  highlights?: CategoryHighlight[];
+  show_on_home?: boolean;
   order?: number;
 }
+
+export interface CompanySettings {
+  name: string;
+  tagline: string;
+  hotline_display: string;
+  hotline_tel: string;
+  hotline_note: string;
+  email: string;
+  address: string;
+  zalo_url: string;
+  zalo_label: string;
+  copyright: string;
+  footer_badge: string;
+}
+
+export interface IconTextItem {
+  icon: string;
+  text: string;
+}
+
+export interface HeroSettings {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  badges: IconTextItem[];
+  audience_note: string;
+  image_url: string;
+  caption_left: string;
+  caption_right: string;
+}
+
+export interface TrustStatItem {
+  icon: string;
+  value: string;
+  label: string;
+}
+
+export interface TrustStatsSettings {
+  items: TrustStatItem[];
+}
+
+export interface CapabilityItem {
+  icon: string;
+  title: string;
+  desc: string;
+}
+
+export interface CapabilitiesSettings {
+  eyebrow: string;
+  title: string;
+  description: string;
+  image_url: string;
+  image_caption: string;
+  items: CapabilityItem[];
+}
+
+export interface ProductDetailSettings {
+  discount_note: string;
+  vat_note: string;
+  invoice_note: string;
+  guarantees: string[];
+  highlights: string[];
+  packaging: string[];
+  default_certificates: string[];
+}
+
+export interface SiteSettings {
+  company: CompanySettings;
+  hero: HeroSettings;
+  trust_stats: TrustStatsSettings;
+  capabilities: CapabilitiesSettings;
+  product_detail: ProductDetailSettings;
+}
+
+export type SiteSettingGroup = keyof SiteSettings;
 
 export interface QuoteRequestPayload {
   full_name: string;

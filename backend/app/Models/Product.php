@@ -25,14 +25,24 @@ class Product extends Model
         'has_cocq',
         'certificates',
         'is_featured',
+        'spec_summary',
+        'show_in_quick_specs',
+        'quick_spec_order',
+        'datasheet_url',
+        'highlights',
+        'packaging',
     ];
 
     protected $casts = [
         'images' => 'array',
         'specifications' => 'array',
         'certificates' => 'array',
+        'highlights' => 'array',
+        'packaging' => 'array',
         'has_cocq' => 'boolean',
         'is_featured' => 'boolean',
+        'show_in_quick_specs' => 'boolean',
+        'quick_spec_order' => 'integer',
     ];
 
     public function category(): BelongsTo

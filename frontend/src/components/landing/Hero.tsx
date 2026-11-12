@@ -3,15 +3,19 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, PackageCheck, ArrowRight, Search, FileText } from 'lucide-react';
+import { ArrowRight, Search, FileText } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import SiteIcon from '@/components/ui/SiteIcon';
+import { DEFAULT_SITE_SETTINGS } from '@/constants';
+import { HeroSettings } from '@/lib/types';
 
 interface HeroProps {
   onOpenQuoteModal?: () => void;
+  settings?: HeroSettings;
 }
 
-export default function Hero({ onOpenQuoteModal }: HeroProps) {
+export default function Hero({ onOpenQuoteModal, settings = DEFAULT_SITE_SETTINGS.hero }: HeroProps) {
   const router = useRouter();
   const [skuQuery, setSkuQuery] = useState('');
 
@@ -30,27 +34,28 @@ export default function Hero({ onOpenQuoteModal }: HeroProps) {
         {/* Left column: Value Proposition, SKU Quick Search & CTAs */}
         <div className="flex-1 max-w-[650px] flex flex-col items-start gap-6">
           <span className="text-ink-subtle text-[12px] font-semibold tracking-[1.4px] uppercase">
-            CUNG ỨNG THIẾT BỊ CHO DÂY CHUYỀN SẢN XUẤT CÔNG NGHIỆP
+            {settings.eyebrow}
           </span>
 
           <h1 className="text-[32px] sm:text-[42px] lg:text-[48px] font-extrabold text-white tracking-[-0.03em] leading-[1.1] sm:leading-[1.08]">
-            Nhà Cung Cấp Máy Móc Công Nghiệp &amp; Dụng Cụ Cơ Khí Chính Xác
+            {settings.title}
           </h1>
 
           <p className="text-ink-subtle text-[15px] sm:text-[16px] leading-[1.65] font-normal">
-            Duy trì sản xuất liên tục. Cung cấp máy móc tin cậy, dụng cụ chính xác và phụ tùng thay thế từ một đối tác kỹ thuật duy nhất.
+            {settings.subtitle}
           </p>
 
           {/* Assurance badges */}
           <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="assurance">
-              <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" aria-hidden="true" />
-              <span>Chứng Nhận CO/CQ</span>
-            </Badge>
-            <Badge variant="assurance">
-              <PackageCheck className="w-4 h-4 text-emerald-400 shrink-0" aria-hidden="true" />
-              <span>Hàng Có Sẵn Trong Kho</span>
-            </Badge>
+            {settings.badges.map((badge, idx) => (
+              <Badge key={idx} variant="assurance">
+                <SiteIcon
+                  name={badge.icon}
+                  className={`w-4 h-4 shrink-0 ${idx % 2 === 0 ? 'text-amber-500' : 'text-emerald-400'}`}
+                />
+                <span>{badge.text}</span>
+              </Badge>
+            ))}
           </div>
 
           {/* Quick SKU / Model Search Bar for B2B buyers */}
@@ -95,7 +100,7 @@ export default function Hero({ onOpenQuoteModal }: HeroProps) {
           </div>
 
           <p className="text-slate-300 text-[13px]">
-            Dành cho bộ phận mua hàng, xưởng cơ khí &amp; nhà máy sản xuất.
+            {settings.audience_note}
           </p>
         </div>
 
@@ -103,19 +108,20 @@ export default function Hero({ onOpenQuoteModal }: HeroProps) {
         <div className="flex-1 w-full max-w-[600px]">
           <div className="relative w-full aspect-[4/3] rounded-[8px] overflow-hidden border border-line-dark bg-navy-800">
             <Image
-              src="/assets/images/cnc-machinery.png"
-              alt="Thiết bị cơ khí và máy CNC chính xác AXIOM"
+              src={settings.image_url || '/assets/images/cnc-machinery.png'}
+              alt={settings.title}
               fill
               className="object-cover"
+              unoptimized={Boolean(settings.image_url?.startsWith('http'))}
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy-900/75 via-transparent to-transparent pointer-events-none" />
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3">
               <span className="font-mono text-[12px] font-semibold text-white tracking-wider uppercase">
-                GIA CÔNG • DỤNG CỤ • ĐO LƯỜNG
+                {settings.caption_left}
               </span>
               <span className="font-mono text-[12px] text-amber-500 font-semibold">
-                ISO 9001 / CO-CQ
+                {settings.caption_right}
               </span>
             </div>
           </div>

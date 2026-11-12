@@ -4,9 +4,16 @@ import React, { useState } from 'react';
 import { Check, Phone, MessageSquare, ArrowUpRight, Lock, Loader2, CheckCircle2 } from 'lucide-react';
 import { quoteService } from '@/services';
 import { getApiErrorMessage } from '@/lib/error-handler';
-import { COMPANY_INFO } from '@/constants';
+import { DEFAULT_SITE_SETTINGS } from '@/constants';
+import { CompanySettings } from '@/lib/types';
 
-export default function QuoteRequestForm() {
+interface QuoteRequestFormProps {
+  company?: CompanySettings;
+}
+
+export default function QuoteRequestForm({
+  company = DEFAULT_SITE_SETTINGS.company,
+}: QuoteRequestFormProps) {
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -93,20 +100,20 @@ export default function QuoteRequestForm() {
             <span className="text-[#94a3b8] text-[12px]">Muốn trao đổi trực tiếp?</span>
             <div className="flex flex-wrap gap-3">
               <a
-                href={COMPANY_INFO.hotlineTel}
+                href={`tel:${company.hotline_tel}`}
                 className="border border-[#475569] hover:border-[#f59e0b] px-3.5 py-2.5 rounded-[4px] flex items-center gap-2 text-white text-[12px] font-medium transition-colors"
               >
                 <Phone className="w-4 h-4 text-[#f59e0b]" />
-                <span>Hotline: {COMPANY_INFO.hotlineDisplay}</span>
+                <span>Hotline: {company.hotline_display}</span>
               </a>
               <a
-                href={COMPANY_INFO.zaloUrl}
+                href={company.zalo_url || 'https://zalo.me'}
                 target="_blank"
                 rel="noreferrer"
                 className="border border-[#475569] hover:border-[#f59e0b] px-3.5 py-2.5 rounded-[4px] flex items-center gap-2 text-white text-[12px] font-medium transition-colors"
               >
                 <MessageSquare className="w-4 h-4 text-[#10b981]" />
-                <span>Zalo: Axiom Supply</span>
+                <span>Zalo: {company.zalo_label || 'Axiom Supply'}</span>
               </a>
             </div>
           </div>

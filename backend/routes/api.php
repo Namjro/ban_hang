@@ -4,10 +4,13 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\QuoteRequestController;
+use App\Http\Controllers\Api\SiteSettingController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\ProductAdminController;
 use App\Http\Controllers\Api\Admin\QuoteAdminController;
 use App\Http\Controllers\Api\Admin\CategoryAdminController;
+use App\Http\Controllers\Api\Admin\SiteSettingAdminController;
+use App\Http\Controllers\Api\Admin\UploadAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/quick-specs', [ProductController::class, 'quickSpecs']);
+    Route::get('/brands', [ProductController::class, 'brands']);
     Route::get('/{identifier}', [ProductController::class, 'show']);
 });
 
@@ -26,6 +30,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/{slug}', [CategoryController::class, 'show']);
 });
 
+Route::get('/settings', [SiteSettingController::class, 'index']);
 Route::post('/quote-requests', [QuoteRequestController::class, 'store']);
 
 /*
@@ -61,4 +66,12 @@ Route::middleware('auth:api')->prefix('admin')->group(function () {
     // Quote Requests Management
     Route::apiResource('quotes', QuoteAdminController::class);
     Route::patch('/quotes/{id}/status', [QuoteAdminController::class, 'updateStatus']);
+
+    // Site Settings Management
+    Route::get('/settings/{group}', [SiteSettingAdminController::class, 'show']);
+    Route::put('/settings/{group}', [SiteSettingAdminController::class, 'update']);
+
+    // Shared Media Uploads
+    Route::post('/uploads/images', [UploadAdminController::class, 'images']);
+    Route::post('/uploads/files', [UploadAdminController::class, 'document']);
 });

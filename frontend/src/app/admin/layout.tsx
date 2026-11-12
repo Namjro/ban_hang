@@ -12,6 +12,7 @@ import {
   User,
   ShieldCheck,
   FolderTree,
+  Settings,
 } from 'lucide-react';
 import { authService } from '@/services';
 import { authStorage } from '@/lib/auth-storage';
@@ -60,6 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Yêu Cầu Báo Giá', href: '/admin/quotes', icon: FileText },
     { label: 'Quản Lý Danh Mục', href: '/admin/categories', icon: FolderTree },
     { label: 'Quản Lý Sản Phẩm', href: '/admin/products', icon: Package },
+    { label: 'Cài Đặt Website', href: '/admin/settings', icon: Settings },
   ];
 
   return (

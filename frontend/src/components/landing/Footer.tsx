@@ -1,8 +1,58 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Lock } from 'lucide-react';
+import { DEFAULT_SITE_SETTINGS } from '@/constants';
+import { Category, CompanySettings } from '@/lib/types';
+import { categoryService } from '@/services';
 
-export default function Footer() {
+interface FooterProps {
+  company?: CompanySettings;
+  categories?: Category[];
+}
+
+const FALLBACK_FOOTER_CATEGORIES = [
+  { name: 'Máy CNC & Máy Công Cụ', slug: 'may-cnc-va-may-cong-cu' },
+  { name: 'Dụng Cụ Cắt Gọt', slug: 'dung-cu-cat-got' },
+  { name: 'Đo Lường Chính Xác', slug: 'do-luong-chinh-xac' },
+  { name: 'Gá Đặt & Phụ Kiện Máy', slug: 'ga-dat-va-phu-kien-may' },
+  { name: 'Bạc Đạn & Ray Trượt', slug: 'bac-dan-va-truyen-dong' },
+  { name: 'Bôi Trơn & Khí Nén', slug: 'boi-tron-va-khi-nen' },
+];
+
+export default function Footer({
+  company = DEFAULT_SITE_SETTINGS.company,
+  categories,
+}: FooterProps) {
+  const [fetchedCategories, setFetchedCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    if (categories) return;
+    let isMounted = true;
+    categoryService
+      .getPublicCategories({ home: true })
+      .then((res) => {
+        if (isMounted && res.success && Array.isArray(res.data)) {
+          setFetchedCategories(res.data);
+        }
+      })
+      .catch(() => {
+        // Fallback links will be used
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [categories]);
+
+  const categoryLinks =
+    (categories && categories.length > 0 ? categories : fetchedCategories).length > 0
+      ? (categories && categories.length > 0 ? categories : fetchedCategories).map((c) => ({
+          name: c.name,
+          slug: c.slug,
+        }))
+      : FALLBACK_FOOTER_CATEGORIES;
+
   return (
     <footer className="bg-navy-900 text-white border-t border-navy-800 py-12 md:py-16">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px]">
@@ -34,13 +84,16 @@ export default function Footer() {
             </div>
 
             <p className="text-ink-subtle text-[13px] leading-relaxed max-w-[480px]">
-              Đối tác kỹ thuật cung ứng thiết bị công nghiệp nặng, máy CNC và dụng cụ cơ khí chính xác cho các nhà máy sản xuất cơ khí, ô tô, điện tử và hàng không tại Việt Nam.
+              {company.tagline}
             </p>
 
             <div className="flex flex-col gap-1.5 text-[13px] text-ink-subtle">
-              <p>Kho hàng trung tâm: Lô E2, Khu Công Nghiệp Tân Bình, TP. Hồ Chí Minh</p>
-              <p>Hotline Kỹ Thuật: 0988.123.456 (24/7)</p>
-              <p>Email Báo Giá: sales@axiom.vn</p>
+              <p>Kho hàng trung tâm: {company.address}</p>
+              <p>
+                Hotline Kỹ Thuật: {company.hotline_display}
+                {company.hotline_note ? ` (${company.hotline_note})` : ''}
+              </p>
+              <p>Email Báo Giá: {company.email}</p>
             </div>
           </div>
 
@@ -50,36 +103,16 @@ export default function Footer() {
               Danh Mục Sản Phẩm
             </span>
             <ul className="flex flex-col gap-2 text-[13px] text-ink-subtle">
-              <li>
-                <Link href="/products?category=may-cnc-va-may-cong-cu" className="hover:text-amber-500 transition-colors">
-                  Máy CNC &amp; Máy Công Cụ
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=dung-cu-cat-got" className="hover:text-amber-500 transition-colors">
-                  Dụng Cụ Cắt Gọt
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=do-luong-chinh-xac" className="hover:text-amber-500 transition-colors">
-                  Đo Lường Chính Xác
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=ga-dat-va-phu-kien-may" className="hover:text-amber-500 transition-colors">
-                  Gá Đặt &amp; Phụ Kiện Máy
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=bac-dan-va-truyen-dong" className="hover:text-amber-500 transition-colors">
-                  Bạc Đạn &amp; Ray Trượt
-                </Link>
-              </li>
-              <li>
-                <Link href="/products?category=boi-tron-va-khi-nen" className="hover:text-amber-500 transition-colors">
-                  Bôi Trơn &amp; Khí Nén
-                </Link>
-              </li>
+              {categoryLinks.slice(0, 8).map((cat) => (
+                <li key={cat.slug}>
+                  <Link
+                    href={`/products?category=${cat.slug}`}
+                    className="hover:text-amber-500 transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -95,14 +128,14 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#quick-specs" className="hover:text-amber-500 transition-colors">
+                <Link href="/#quick-specs" className="hover:text-amber-500 transition-colors">
                   Bảng Thông Số Kỹ Thuật
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#quote-request" className="hover:text-amber-500 transition-colors">
+                <Link href="/#quote-request" className="hover:text-amber-500 transition-colors">
                   Gửi Yêu Cầu Báo Giá B2B
-                </a>
+                </Link>
               </li>
               <li className="pt-2">
                 <Link
@@ -119,8 +152,8 @@ export default function Footer() {
 
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-ink-subtle">
-          <p>© 2026 AXIOM Industrial Supply. Tất cả các quyền được bảo lưu.</p>
-          <p className="font-mono text-[12px]">ISO 9001 • Chứng Nhận CO/CQ Chính Hãng</p>
+          <p>{company.copyright}</p>
+          <p className="font-mono text-[12px]">{company.footer_badge}</p>
         </div>
       </div>
     </footer>

@@ -2,14 +2,20 @@
 
 import React, { useState } from 'react';
 import { Award, Check, FileDown, FileText, Layers, Package, Sparkles } from 'lucide-react';
-import { Product } from '@/lib/types';
+import { DEFAULT_SITE_SETTINGS } from '@/constants';
+import { Product, ProductDetailSettings } from '@/lib/types';
 
 interface ProductDetailTabsProps {
   product: Product;
+  settings?: ProductDetailSettings;
   onOpenQuoteModal: (targetSku: string) => void;
 }
 
-export default function ProductDetailTabs({ product, onOpenQuoteModal }: ProductDetailTabsProps) {
+export default function ProductDetailTabs({
+  product,
+  settings = DEFAULT_SITE_SETTINGS.product_detail,
+  onOpenQuoteModal,
+}: ProductDetailTabsProps) {
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'certs'>('desc');
 
   const specsEntries = product.specifications ? Object.entries(product.specifications) : [];
@@ -18,12 +24,18 @@ export default function ProductDetailTabs({ product, onOpenQuoteModal }: Product
     Array.isArray(product.certificates) && product.certificates.length > 0
       ? product.certificates
       : product.has_cocq
-        ? [
-            'CO/CQ Gốc Nhà Sản Xuất',
-            'Chứng Nhận Chất Lượng Xuất Xưởng ISO 9001:2015',
-            'Kiểm Định Dung Sai KCS AXIOM',
-          ]
+        ? settings.default_certificates
         : [];
+
+  const highlightsList: string[] =
+    Array.isArray(product.highlights) && product.highlights.length > 0
+      ? product.highlights
+      : settings.highlights;
+
+  const packagingList: string[] =
+    Array.isArray(product.packaging) && product.packaging.length > 0
+      ? product.packaging
+      : settings.packaging;
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[72px] mt-10">
@@ -92,10 +104,9 @@ export default function ProductDetailTabs({ product, onOpenQuoteModal }: Product
                     Ưu Điểm Nổi Bật
                   </h4>
                   <ul className="text-[13px] text-[#475569] space-y-1.5 list-disc list-inside">
-                    <li>Dung sai đồng đều, gia công chính xác theo chuẩn ISO.</li>
-                    <li>Độ cứng bề mặt vượt trội, kéo dài tuổi thọ sử dụng.</li>
-                    <li>Tương thích chuẩn công nghiệp quốc tế (JIS, DIN, ANSI).</li>
-                    <li>Kháng rung động và tản nhiệt tối ưu trong ca vận hành liên tục.</li>
+                    {highlightsList.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
                   </ul>
                 </div>
 
@@ -105,10 +116,9 @@ export default function ProductDetailTabs({ product, onOpenQuoteModal }: Product
                     Quy Cách Đóng Gói & Xuất Xưởng
                   </h4>
                   <ul className="text-[13px] text-[#475569] space-y-1.5 list-disc list-inside">
-                    <li>Hộp bảo vệ chống ẩm, chống sốc và chống gỉ sét VCI.</li>
-                    <li>Kèm tem mã vạch truy xuất nguồn gốc SKU chính hãng.</li>
-                    <li>Chứng thư kiểm định (Inspection Certificate) kèm theo hộp.</li>
-                    <li>Tài liệu hướng dẫn vận hành và bảo trì máy.</li>
+                    {packagingList.map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -118,7 +128,7 @@ export default function ProductDetailTabs({ product, onOpenQuoteModal }: Product
           {/* TAB 2: Thông Số Kỹ Thuật */}
           {activeTab === 'specs' && (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between pb-2">
+              <div className="flex items-center justify-between gap-4 pb-2">
                 <div>
                   <h3 className="text-[18px] font-bold text-[#0b132b]">
                     Bảng Thông Số Kỹ Thuật (Engineering Specification Sheet)
@@ -127,6 +137,17 @@ export default function ProductDetailTabs({ product, onOpenQuoteModal }: Product
                     Được kiểm tra bởi phòng KCS AXIOM trước khi nhập kho.
                   </p>
                 </div>
+                {product.datasheet_url && (
+                  <a
+                    href={product.datasheet_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 bg-[#0b132b] hover:bg-[#152039] text-white text-[12px] font-semibold h-[38px] px-4 rounded-[4px] shrink-0 transition-colors"
+                  >
+                    <FileDown className="w-4 h-4 text-[#f59e0b]" />
+                    <span>Tải Spec Sheet (PDF)</span>
+                  </a>
+                )}
               </div>
 
               {specsEntries.length === 0 ? (

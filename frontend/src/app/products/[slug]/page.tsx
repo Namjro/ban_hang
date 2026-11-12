@@ -21,11 +21,12 @@ import RelatedProductsSection from '@/components/products/RelatedProductsSection
 import Button from '@/components/ui/Button';
 import { productService } from '@/services';
 import { Product } from '@/lib/types';
-import { COMPANY_INFO } from '@/constants';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 function ProductDetailContent() {
   const params = useParams();
   const slug = (params?.slug as string) || '';
+  const { settings } = useSiteSettings();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -185,13 +186,13 @@ function ProductDetailContent() {
                       {product.price_display || 'Liên hệ báo giá'}
                     </div>
                     <span className="text-[12px] text-emerald-700 font-medium mt-0.5">
-                      Chiết khấu 5% - 15% cho đơn hàng dự án &amp; số lượng lớn
+                      {settings.product_detail.discount_note}
                     </span>
                   </div>
 
                   <div className="flex flex-col sm:items-end text-[12px] text-ink-muted border-t sm:border-t-0 sm:border-l border-line pt-2 sm:pt-0 sm:pl-4">
-                    <span>VAT 8% - 10% đầy đủ</span>
-                    <span>Hóa đơn điện tử xuất trong ngày</span>
+                    <span>{settings.product_detail.vat_note}</span>
+                    <span>{settings.product_detail.invoice_note}</span>
                   </div>
                 </div>
 
@@ -226,27 +227,21 @@ function ProductDetailContent() {
                   </Button>
 
                   <a
-                    href={COMPANY_INFO.hotlineTel}
+                    href={`tel:${settings.company.hotline_tel}`}
                     className="bg-navy-900 hover:bg-navy-800 text-white font-semibold text-[13px] h-[50px] px-5 rounded-[4px] inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
                   >
                     <PhoneCall className="w-4 h-4 text-amber-500" aria-hidden="true" />
-                    <span>Hotline: {COMPANY_INFO.hotlineDisplay}</span>
+                    <span>Hotline: {settings.company.hotline_display}</span>
                   </a>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-line text-[12px] text-ink-muted">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
-                    <span>Bảo hành chính hãng 12-24T</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
-                    <span>Đổi trả nếu sai dung sai</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
-                    <span>Kỹ sư hỗ trợ lắp đặt / test</span>
-                  </div>
+                  {settings.product_detail.guarantees.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" aria-hidden="true" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -271,14 +266,18 @@ function ProductDetailContent() {
           </div>
         </div>
 
-        <ProductDetailTabs product={product} onOpenQuoteModal={handleOpenQuoteModal} />
+        <ProductDetailTabs
+          product={product}
+          settings={settings.product_detail}
+          onOpenQuoteModal={handleOpenQuoteModal}
+        />
         <RelatedProductsSection
           categoryName={product.category?.name}
           products={relatedProducts}
         />
       </main>
 
-      <Footer />
+      <Footer company={settings.company} />
 
       <FloatingContactBubble onClick={() => handleOpenQuoteModal()} />
       <ContactModal

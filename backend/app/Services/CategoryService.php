@@ -11,11 +11,14 @@ class CategoryService
 {
     /**
      * Get public category list with product counts.
+     * When $homeOnly is true, only categories flagged for the homepage are returned.
      */
-    public function getPublicCategories(): Collection
+    public function getPublicCategories(bool $homeOnly = false): Collection
     {
         return Category::withCount('products')
+            ->when($homeOnly, fn ($q) => $q->where('show_on_home', true))
             ->orderBy('order', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 

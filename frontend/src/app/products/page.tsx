@@ -27,6 +27,7 @@ function ProductsCatalogContent() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [, startTransition] = useTransition();
 
@@ -58,7 +59,7 @@ function ProductsCatalogContent() {
     }
   }, [searchParams]);
 
-  // Fetch Categories
+  // Fetch Categories & Brands
   useEffect(() => {
     categoryService
       .getPublicCategories()
@@ -68,6 +69,15 @@ function ProductsCatalogContent() {
         }
       })
       .catch((err) => console.error('Failed to load categories', err));
+
+    productService
+      .getBrands()
+      .then((res) => {
+        if (res.success && Array.isArray(res.data)) {
+          setBrands(res.data);
+        }
+      })
+      .catch((err) => console.error('Failed to load brands', err));
   }, []);
 
   // Fetch Products
@@ -196,6 +206,7 @@ function ProductsCatalogContent() {
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             <CatalogFilterSidebar
               categories={categories}
+              brands={brands}
               totalProducts={pagination.total}
               selectedCategory={selectedCategory}
               selectedStock={selectedStock}

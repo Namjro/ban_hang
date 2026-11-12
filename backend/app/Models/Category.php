@@ -16,6 +16,15 @@ class Category extends Model
         'description',
         'icon',
         'order',
+        'subtitle',
+        'image_url',
+        'highlights',
+        'show_on_home',
+    ];
+
+    protected $casts = [
+        'highlights'   => 'array',
+        'show_on_home' => 'boolean',
     ];
 
     public function products(): HasMany

@@ -14,9 +14,16 @@ class ProductSeeder extends Seeder
         $categoriesData = [
             [
                 'name' => 'Máy CNC & Máy Công Cụ',
+                'subtitle' => 'GIA CÔNG CƠ KHÍ',
                 'slug' => 'may-cnc-va-may-cong-cu',
                 'description' => 'Máy tiện CNC, máy phay đứng, cưa vòng tự động và thiết bị gia công kim loại chất lượng cao.',
                 'icon' => 'factory',
+                'image_url' => '/assets/images/cat-cnc.png',
+                'highlights' => [
+                    ['label' => 'Thiết Bị', 'value' => 'Tiện, Phay, Cưa vòng, Mài phẳng'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Tải trọng • Trục • Công suất'],
+                ],
+                'show_on_home' => true,
                 'order' => 1,
                 'products' => [
                     ['sku' => 'AX-CNC-VMC850', 'name' => 'Trung Tâm Gia Công Đứng CNC VMC-850', 'brand' => 'Axiom Precision', 'stock' => 'in_stock', 'featured' => true,
@@ -41,9 +48,16 @@ class ProductSeeder extends Seeder
             ],
             [
                 'name' => 'Dụng Cụ Cắt Gọt',
+                'subtitle' => 'DỤNG CỤ CẮT GỌT',
                 'slug' => 'dung-cu-cat-got',
                 'description' => 'Mảnh hợp kim carbide, dao phay ngón siêu bền, mũi khoan taro phủ TiAlN cho thép và inox.',
                 'icon' => 'crosshair',
+                'image_url' => '/assets/images/cat-cutting.png',
+                'highlights' => [
+                    ['label' => 'Dòng Sản Phẩm', 'value' => 'Mảnh hợp kim, Dao phay ngón, Mũi khoan'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Vật liệu • Đường kính • Lớp phủ'],
+                ],
+                'show_on_home' => true,
                 'order' => 2,
                 'products' => [
                     ['sku' => 'AX-EM-4FL-10', 'name' => 'Dao Phay Ngón Hợp Kim 4 Me Ø10mm Phủ TiAlN', 'brand' => 'Axiom Tooling', 'stock' => 'in_stock', 'featured' => true,
@@ -68,9 +82,16 @@ class ProductSeeder extends Seeder
             ],
             [
                 'name' => 'Dụng Cụ Đo Lường Chính Xác',
+                'subtitle' => 'ĐO LƯỜNG CHÍNH XÁC',
                 'slug' => 'do-luong-chinh-xac',
                 'description' => 'Thước kẹp điện tử, panme đo ngoài, đồng hồ so kiểm tra độ đảo chuẩn Mitutoyo với đầy đủ CO/CQ.',
                 'icon' => 'scan-line',
+                'image_url' => '/assets/images/cat-measuring.png',
+                'highlights' => [
+                    ['label' => 'Thiết Bị Đo', 'value' => 'Thước kẹp, Panme, Đồng hồ so'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Phạm vi đo • Độ phân giải • Độ chính xác'],
+                ],
+                'show_on_home' => true,
                 'order' => 3,
                 'products' => [
                     ['sku' => 'AX-PM-150', 'name' => 'Thước Kẹp Điện Tử Đo Trong Ngoài 0-150mm IP67', 'brand' => 'Mitutoyo', 'stock' => 'in_stock', 'featured' => true,
@@ -95,9 +116,16 @@ class ProductSeeder extends Seeder
             ],
             [
                 'name' => 'Gá Đặt & Phụ Kiện Máy',
+                'subtitle' => 'GÁ ĐẶT & ĐỒ GÁ',
                 'slug' => 'ga-dat-va-phu-kien-may',
                 'description' => 'Ê tô máy CNC Vertex, bầu kẹp dao BT40/ER32, mâm cặp 3 chấu thủy lực và bàn xoay chia độ.',
                 'icon' => 'boxes',
+                'image_url' => '/assets/images/cat-fixture.png',
+                'highlights' => [
+                    ['label' => 'Phụ Kiện', 'value' => 'Ê tô thủy lực, Bầu kẹp BT40, Mâm cặp'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Lực kẹp • Chuẩn côn • Khả năng gá'],
+                ],
+                'show_on_home' => true,
                 'order' => 4,
                 'products' => [
                     ['sku' => 'AX-WH-100', 'name' => 'Ê Tô Máy Phay Cơ Khí Thủy Lực Lực Kẹp Khỏe VH-100', 'brand' => 'Vertex', 'stock' => 'in_stock', 'featured' => true,
@@ -122,9 +150,16 @@ class ProductSeeder extends Seeder
             ],
             [
                 'name' => 'Bạc Đạn & Truyền Động Tuyến Tính',
+                'subtitle' => 'TRUYỀN ĐỘNG CƠ KHÍ',
                 'slug' => 'bac-dan-va-truyen-dong',
                 'description' => 'Ổ bi cầu rãnh sâu, bạc đạn đỡ chặn trục chính CNC, con trượt thanh trượt vuông chính xác.',
                 'icon' => 'crosshair',
+                'image_url' => '/assets/images/cat-bearing.png',
+                'highlights' => [
+                    ['label' => 'Sản Phẩm', 'value' => 'Vòng bi cầu, Bạc đạn đỡ chặn, Ray trượt'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Đường kính trục • Tải trọng • Cấp chính xác'],
+                ],
+                'show_on_home' => true,
                 'order' => 5,
                 'products' => [
                     ['sku' => 'AX-BR-6205-2RS', 'name' => 'Vòng Bi Bạc Đạn Cầu Rãnh Sâu 6205-2RS Nắp Cao Su', 'brand' => 'SKF', 'stock' => 'in_stock', 'featured' => true,
@@ -149,9 +184,16 @@ class ProductSeeder extends Seeder
             ],
             [
                 'name' => 'Bôi Trơn & Khí Nén',
+                'subtitle' => 'VẬT TƯ TIÊU HAO',
                 'slug' => 'boi-tron-va-khi-nen',
                 'description' => 'Dầu tưới nguội làm mát cắt gọt pha nước, bộ lọc khí nén SMC và van điện từ công nghiệp.',
                 'icon' => 'truck',
+                'image_url' => '/assets/images/cat-pneumatic.png',
+                'highlights' => [
+                    ['label' => 'Dung Dịch & Thiết Bị', 'value' => 'Dầu tưới nguội pha nước, Bộ lọc khí, Van SMC'],
+                    ['label' => 'Lựa Chọn Theo', 'value' => 'Độ nhớt • Tỷ lệ pha • Áp suất làm việc'],
+                ],
+                'show_on_home' => true,
                 'order' => 6,
                 'products' => [
                     ['sku' => 'AX-LUB-EMUL20L', 'name' => 'Dầu Làm Mát Cắt Gọt Kim Loại Pha Nước Bán Tổng Hợp Thùng 20L', 'brand' => 'Castrol Hysol', 'stock' => 'in_stock', 'featured' => true,
@@ -174,6 +216,15 @@ class ProductSeeder extends Seeder
                      'specs' => ['Chiều dài đầu phun' => '120 mm ống thép mạ crom', 'Cò bấm điều chỉnh' => 'Tự điều chỉnh lưu lượng gió mạnh nhẹ', 'Chuôi cắm nhanh' => 'Khớp nối nhanh chuẩn Nitto 20PM']],
                 ]
             ],
+        ];
+
+        $quickSpecMap = [
+            'AX-WH-100'     => ['order' => 1, 'summary' => 'Chiều rộng hàm kẹp 100 mm, mở 170 mm'],
+            'AX-PM-150'     => ['order' => 2, 'summary' => 'Phạm vi đo 0–150 mm, IP67 kháng nước'],
+            'AX-EM-4FL-10'  => ['order' => 3, 'summary' => 'Đường kính Ø10 mm, 4 me phủ TiAlN (55 HRC)'],
+            'AX-BR-6205-2RS'=> ['order' => 4, 'summary' => '25 x 52 x 15 mm, hai nắp cao su NBR'],
+            'AX-CNC-VMC850' => ['order' => 5, 'summary' => 'Hành trình 800x500x550 mm, 10.000 RPM BT40'],
+            'AX-LUB-EMUL20L'=> ['order' => 6, 'summary' => 'Xô 20 Lít, tỷ lệ pha 5–8% chống gỉ tốt'],
         ];
 
         $productGlobalIndex = 0;
@@ -199,6 +250,8 @@ class ProductSeeder extends Seeder
                     'Biên Bản Kiểm Định KCS AXIOM'
                 ];
 
+                $quickSpec = $quickSpecMap[$p['sku']] ?? null;
+
                 Product::updateOrCreate(
                     ['sku' => $p['sku']],
                     [
@@ -210,11 +263,14 @@ class ProductSeeder extends Seeder
                         'images' => $gallery,
                         'description' => $p['name'] . ' là thiết bị cơ khí chính xác được nhập khẩu và phân phối chính thức bởi AXIOM Industrial Supply. Sản phẩm trải qua quy trình kiểm tra chất lượng nghiêm ngặt (KCS), đạt dung sai tối ưu, có đầy đủ hồ sơ CO/CQ và hóa đơn VAT. Phù hợp cho các xưởng gia công CNC, phân xưởng cơ khí chính xác và dây chuyền lắp ráp công nghiệp.',
                         'specifications' => $p['specs'],
+                        'spec_summary' => $quickSpec['summary'] ?? null,
                         'stock_status' => $p['stock'],
                         'price_display' => 'Liên hệ báo giá',
                         'has_cocq' => true,
                         'certificates' => $certs,
                         'is_featured' => $p['featured'],
+                        'show_in_quick_specs' => $quickSpec !== null,
+                        'quick_spec_order' => $quickSpec['order'] ?? 0,
                     ]
                 );
 

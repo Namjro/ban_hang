@@ -10,6 +10,10 @@ use Illuminate\Support\Str;
 
 class ProductService
 {
+    public function __construct(
+        protected MediaService $mediaService
+    ) {}
+
     /**
      * Get public products with search, filtering, sorting, pagination, and SKU meta.
      */
@@ -87,13 +91,32 @@ class ProductService
     }
 
     /**
-     * Get distinct products for the Quick Spec Table.
+     * Get products flagged for the homepage Quick Spec Table.
      */
     public function getQuickSpecProducts(): Collection
     {
         return Product::with('category')
-            ->whereIn('sku', ['AX-WH-100', 'AX-PM-150', 'AX-EM-4FL-10', 'AX-BR-6205-2RS', 'AX-CNC-VMC850', 'AX-LUB-EMUL20L'])
+            ->where('show_in_quick_specs', true)
+            ->orderBy('quick_spec_order')
+            ->orderBy('id')
+            ->limit(10)
             ->get();
+    }
+
+    /**
+     * Get the distinct list of brands currently used by products.
+     *
+     * @return array<string>
+     */
+    public function getPublicBrands(): array
+    {
+        return Product::query()
+            ->whereNotNull('brand')
+            ->where('brand', '!=', '')
+            ->distinct()
+            ->orderBy('brand')
+            ->pluck('brand')
+            ->all();
     }
 
     /**
@@ -194,32 +217,6 @@ class ProductService
      */
     public function uploadProductImages(array $files, string $schemeAndHttpHost): array
     {
-        $targetDir = public_path('uploads' . DIRECTORY_SEPARATOR . 'products');
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
-
-        $uploadedUrls = [];
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
-
-        foreach ($files as $file) {
-            if (!$file instanceof UploadedFile) {
-                continue;
-            }
-
-            $extension = strtolower($file->getClientOriginalExtension());
-            if (!in_array($extension, $allowed)) {
-                continue;
-            }
-
-            $filename = 'axiom_' . time() . '_' . Str::random(8) . '.' . $extension;
-            $destinationPath = $targetDir . DIRECTORY_SEPARATOR . $filename;
-
-            if (@copy($file->getRealPath(), $destinationPath) || @file_put_contents($destinationPath, file_get_contents($file->getRealPath()))) {
-                $uploadedUrls[] = $schemeAndHttpHost . '/uploads/products/' . $filename;
-            }
-        }
-
-        return $uploadedUrls;
+        return $this->mediaService->storeImages($files, $schemeAndHttpHost, 'products');
     }
 }

@@ -17,7 +17,8 @@ import {
   Cpu,
   Layers,
 } from 'lucide-react';
-import { Category, CategoryPayload } from '@/lib/types';
+import { Category, CategoryHighlight, CategoryPayload } from '@/lib/types';
+import ImageUploadField from '@/components/admin/shared/ImageUploadField';
 
 export const CATEGORY_ICON_OPTIONS = [
   { id: 'factory', label: 'Nhà máy / CNC', icon: Factory },
@@ -58,9 +59,13 @@ export default function CategoryFormModal({
 }: CategoryFormModalProps) {
   const [form, setForm] = useState({
     name: '',
+    subtitle: '',
     slug: '',
     description: '',
     icon: 'factory',
+    image_url: '',
+    highlights: [] as CategoryHighlight[],
+    show_on_home: true,
     order: defaultOrder,
   });
 
@@ -69,17 +74,28 @@ export default function CategoryFormModal({
     if (editingCategory) {
       setForm({
         name: editingCategory.name,
+        subtitle: editingCategory.subtitle || '',
         slug: editingCategory.slug,
         description: editingCategory.description || '',
         icon: editingCategory.icon || 'factory',
+        image_url: editingCategory.image_url || '',
+        highlights: Array.isArray(editingCategory.highlights) ? editingCategory.highlights : [],
+        show_on_home: editingCategory.show_on_home ?? true,
         order: editingCategory.order || 0,
       });
     } else {
       setForm({
         name: '',
+        subtitle: '',
         slug: '',
         description: '',
         icon: 'factory',
+        image_url: '',
+        highlights: [
+          { label: 'Thiết Bị', value: '' },
+          { label: 'Lựa Chọn Theo', value: '' },
+        ],
+        show_on_home: true,
         order: defaultOrder,
       });
     }
@@ -108,11 +124,20 @@ export default function CategoryFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanedHighlights = form.highlights
+      .map((h) => ({ label: h.label.trim(), value: h.value.trim() }))
+      .filter((h) => h.label && h.value)
+      .slice(0, 2);
+
     await onSave({
       name: form.name.trim(),
+      subtitle: form.subtitle.trim() || null,
       slug: form.slug.trim(),
       description: form.description.trim(),
       icon: form.icon,
+      image_url: form.image_url.trim() || null,
+      highlights: cleanedHighlights,
+      show_on_home: form.show_on_home,
       order: Number(form.order) || 0,
     });
   };
@@ -230,12 +255,88 @@ export default function CategoryFormModal({
           <div className="flex flex-col gap-1">
             <label className="text-[12px] font-semibold text-[#0b132b]">Mô Tả Danh Mục</label>
             <textarea
-              rows={3}
+              rows={2}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               placeholder="Mô tả phạm vi ứng dụng, nhóm thiết bị trực thuộc..."
               className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] p-2 text-[13px] focus:outline-none focus:border-[#0b132b] resize-none"
             />
+          </div>
+
+          {/* Homepage Display Settings */}
+          <div className="border-t border-[#dce2ea] pt-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-bold text-[#0b132b] uppercase tracking-wider">
+                Hiển Thị Trang Chủ
+              </span>
+              <label className="inline-flex items-center gap-2 text-[12px] font-medium text-[#0b132b] cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.show_on_home}
+                  onChange={(e) => setForm({ ...form, show_on_home: e.target.checked })}
+                  className="w-4 h-4 accent-[#0b132b]"
+                />
+                <span>Hiện trên trang chủ</span>
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-[12px] font-semibold text-[#0b132b]">
+                Nhãn Phụ (Subtitle trên thẻ danh mục)
+              </label>
+              <input
+                type="text"
+                value={form.subtitle}
+                onChange={(e) => setForm({ ...form, subtitle: e.target.value })}
+                placeholder="Vd: GIA CÔNG CƠ KHÍ"
+                className="bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-3 py-2 text-[13px] focus:outline-none focus:border-[#0b132b]"
+              />
+            </div>
+
+            <ImageUploadField
+              label="Ảnh Đại Diện Danh Mục"
+              value={form.image_url}
+              onChange={(image_url) => setForm({ ...form, image_url })}
+              folder="categories"
+              placeholder="/assets/images/cat-cnc.png"
+            />
+
+            <div className="flex flex-col gap-2">
+              <label className="text-[12px] font-semibold text-[#0b132b]">
+                2 Dòng Thông Tin Nổi Bật (tối đa 2)
+              </label>
+              {[0, 1].map((idx) => {
+                const current = form.highlights[idx] || { label: '', value: '' };
+                return (
+                  <div key={idx} className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                    <input
+                      type="text"
+                      value={current.label}
+                      onChange={(e) => {
+                        const next = [...form.highlights];
+                        next[idx] = { ...current, label: e.target.value };
+                        setForm({ ...form, highlights: next });
+                      }}
+                      placeholder={idx === 0 ? 'Nhãn (vd: Thiết Bị)' : 'Nhãn (vd: Lựa Chọn Theo)'}
+                      className="sm:col-span-4 bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-2.5 py-1.5 text-[12px]"
+                    />
+                    <input
+                      type="text"
+                      value={current.value}
+                      onChange={(e) => {
+                        const next = [...form.highlights];
+                        next[idx] = { ...current, value: e.target.value };
+                        setForm({ ...form, highlights: next });
+                      }}
+                      placeholder={
+                        idx === 0 ? 'Tiện, Phay, Cưa vòng...' : 'Tải trọng • Trục • Công suất'
+                      }
+                      className="sm:col-span-8 bg-[#f8fafc] border border-[#dce2ea] rounded-[4px] px-2.5 py-1.5 text-[12px]"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Live Preview Card */}

@@ -2,8 +2,12 @@ import { api } from '@/lib/api';
 import { ApiResponse, Category, CategoryPayload } from '@/lib/types';
 
 export const categoryService = {
-  async getPublicCategories(): Promise<ApiResponse<Category[]>> {
-    const res = await api.get<ApiResponse<Category[]>>('/categories');
+  async getPublicCategories(options?: { home?: boolean }): Promise<ApiResponse<Category[]>> {
+    const params: Record<string, number> = {};
+    if (options?.home) {
+      params.home = 1;
+    }
+    const res = await api.get<ApiResponse<Category[]>>('/categories', { params });
     return res.data;
   },
 

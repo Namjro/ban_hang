@@ -36,6 +36,11 @@ export const productService = {
     return res.data;
   },
 
+  async getBrands(): Promise<ApiResponse<string[]>> {
+    const res = await api.get<ApiResponse<string[]>>('/products/brands');
+    return res.data;
+  },
+
   async getAdminProducts(params: AdminProductFilterParams = {}): Promise<PaginatedApiResponse<Product>> {
     const queryParams: Record<string, string | number> = {};
     if (params.page) queryParams.page = params.page;

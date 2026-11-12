@@ -26,6 +26,14 @@ class UpdateProductRequest extends BaseFormRequest
             'certificates'   => 'nullable|array',
             'certificates.*' => 'string|max:255',
             'is_featured'    => 'boolean',
+            'spec_summary'        => 'nullable|string|max:255',
+            'show_in_quick_specs' => 'boolean',
+            'quick_spec_order'    => 'nullable|integer|min:0|max:9999',
+            'datasheet_url'       => 'nullable|string|max:500',
+            'highlights'          => 'nullable|array|max:10',
+            'highlights.*'        => 'string|max:200',
+            'packaging'           => 'nullable|array|max:10',
+            'packaging.*'         => 'string|max:200',
         ];
     }
 }

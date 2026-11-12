@@ -3,10 +3,11 @@
 import React, { useState } from 'react';
 import { SlidersHorizontal, RotateCcw, ChevronDown } from 'lucide-react';
 import { Category } from '@/lib/types';
-import { BRAND_FILTER_OPTIONS, STOCK_FILTER_OPTIONS } from '@/constants';
+import { STOCK_FILTER_OPTIONS } from '@/constants';
 
 interface CatalogFilterSidebarProps {
   categories: Category[];
+  brands: string[];
   totalProducts: number;
   selectedCategory: string;
   selectedStock: string;
@@ -19,6 +20,7 @@ interface CatalogFilterSidebarProps {
 
 export default function CatalogFilterSidebar({
   categories,
+  brands,
   totalProducts,
   selectedCategory,
   selectedStock,
@@ -97,7 +99,7 @@ export default function CatalogFilterSidebar({
                 }`}
               >
                 <span className="truncate pr-2">{cat.name}</span>
-                <span className="text-[12px] opacity-80">{cat.products_count ?? 9}</span>
+                <span className="text-[12px] opacity-80">{cat.products_count ?? 0}</span>
               </button>
             ))}
           </div>
@@ -133,9 +135,9 @@ export default function CatalogFilterSidebar({
             Thương Hiệu
           </span>
           <div className="flex flex-col gap-1">
-            {BRAND_FILTER_OPTIONS.map((b) => (
+            {['', ...brands].map((b) => (
               <label
-                key={b}
+                key={b || 'all'}
                 className="flex items-center gap-2.5 text-[13px] text-ink-muted cursor-pointer hover:text-ink min-h-[40px] px-1"
               >
                 <input

@@ -1,65 +1,127 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FileText, FileDown, ArrowUpRight, ArrowRight } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
+import { Product } from '@/lib/types';
+import { productService } from '@/services';
 
 interface QuickSpecTableProps {
   onOpenQuoteModal?: () => void;
 }
 
+interface QuickSpecRow {
+  sku: string;
+  slug: string;
+  name: string;
+  group: string;
+  dimensions: string;
+  brand: string;
+  datasheetUrl?: string | null;
+}
+
+const FALLBACK_SPECS: QuickSpecRow[] = [
+  {
+    sku: 'AX-WH-100',
+    slug: 'AX-WH-100',
+    name: 'Ê tô máy',
+    group: 'Kẹp Gá & Đồ Gá Định Vị',
+    dimensions: 'Chiều rộng hàm kẹp 100 mm, mở 170 mm',
+    brand: 'Vertex',
+  },
+  {
+    sku: 'AX-PM-150',
+    slug: 'AX-PM-150',
+    name: 'Thước kẹp điện tử',
+    group: 'Đo Lường Chính Xác',
+    dimensions: 'Phạm vi đo 0–150 mm, IP67 kháng nước',
+    brand: 'Mitutoyo',
+  },
+  {
+    sku: 'AX-EM-4FL-10',
+    slug: 'AX-EM-4FL-10',
+    name: 'Dao phay ngón carbide',
+    group: 'Dụng Cụ Cắt Gọt',
+    dimensions: 'Đường kính Ø10 mm, 4 me phủ TiAlN (55 HRC)',
+    brand: 'Axiom Tooling',
+  },
+  {
+    sku: 'AX-BR-6205-2RS',
+    slug: 'AX-BR-6205-2RS',
+    name: 'Vòng bi cầu rãnh sâu',
+    group: 'Bạc Đạn & Truyền Động',
+    dimensions: '25 x 52 x 15 mm, hai nắp cao su NBR',
+    brand: 'SKF',
+  },
+  {
+    sku: 'AX-CNC-VMC850',
+    slug: 'AX-CNC-VMC850',
+    name: 'Trung tâm phay đứng CNC',
+    group: 'Máy CNC & Máy Công Cụ',
+    dimensions: 'Hành trình 800x500x550 mm, 10.000 RPM BT40',
+    brand: 'Axiom Precision',
+  },
+  {
+    sku: 'AX-LUB-EMUL20L',
+    slug: 'AX-LUB-EMUL20L',
+    name: 'Dầu làm mát pha nước',
+    group: 'Bôi Trơn & Khí Nén',
+    dimensions: 'Xô 20 Lít, tỷ lệ pha 5–8% chống gỉ tốt',
+    brand: 'Castrol Hysol',
+  },
+];
+
+function formatProductRow(p: Product): QuickSpecRow {
+  const specText =
+    p.spec_summary ||
+    (p.specifications
+      ? Object.entries(p.specifications)
+          .slice(0, 2)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(', ')
+      : p.description || '');
+
+  return {
+    sku: p.sku,
+    slug: p.slug || p.sku,
+    name: p.name,
+    group: p.category?.name || 'Thiết bị công nghiệp',
+    dimensions: specText,
+    brand: p.brand,
+    datasheetUrl: p.datasheet_url,
+  };
+}
+
 export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps) {
   const toast = useToast();
+  const [rows, setRows] = useState<QuickSpecRow[]>(FALLBACK_SPECS);
 
-  const specs = [
-    {
-      sku: 'AX-WH-100',
-      category: 'Ê tô máy',
-      group: 'Kẹp Gá & Đồ Gá Định Vị',
-      dimensions: 'Chiều rộng hàm kẹp 100 mm, mở 170 mm',
-      brand: 'Vertex',
-    },
-    {
-      sku: 'AX-PM-150',
-      category: 'Thước kẹp điện tử',
-      group: 'Đo Lường Chính Xác',
-      dimensions: 'Phạm vi đo 0–150 mm, IP67 kháng nước',
-      brand: 'Mitutoyo',
-    },
-    {
-      sku: 'AX-EM-4FL-10',
-      category: 'Dao phay ngón carbide',
-      group: 'Dụng Cụ Cắt Gọt',
-      dimensions: 'Đường kính Ø10 mm, 4 me phủ TiAlN (55 HRC)',
-      brand: 'Axiom Tooling',
-    },
-    {
-      sku: 'AX-BR-6205-2RS',
-      category: 'Vòng bi cầu rãnh sâu',
-      group: 'Bạc Đạn & Truyền Động',
-      dimensions: '25 x 52 x 15 mm, hai nắp cao su NBR',
-      brand: 'SKF',
-    },
-    {
-      sku: 'AX-CNC-VMC850',
-      category: 'Trung tâm phay đứng CNC',
-      group: 'Máy CNC & Máy Công Cụ',
-      dimensions: 'Hành trình 800x500x550 mm, 10.000 RPM BT40',
-      brand: 'Axiom Precision',
-    },
-    {
-      sku: 'AX-LUB-EMUL20L',
-      category: 'Dầu làm mát pha nước',
-      group: 'Bôi Trơn & Khí Nén',
-      dimensions: 'Xô 20 Lít, tỷ lệ pha 5–8% chống gỉ tốt',
-      brand: 'Castrol Hysol',
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+    productService
+      .getQuickSpecs()
+      .then((res) => {
+        if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setRows(res.data.map(formatProductRow));
+        }
+      })
+      .catch(() => {
+        // Keep FALLBACK_SPECS on error
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-  const handleRequestSpecSheet = (sku: string) => {
+  const handleSpecSheetAction = (row: QuickSpecRow) => {
+    if (row.datasheetUrl) {
+      window.open(row.datasheetUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
     toast.info(
-      `Tài liệu Spec Sheet cho mã ${sku} được gửi kèm báo giá kỹ thuật. Vui lòng để lại email để nhận bản PDF chính thức.`,
+      `Tài liệu Spec Sheet cho mã ${row.sku} được gửi kèm báo giá kỹ thuật. Vui lòng để lại email để nhận bản PDF chính thức.`,
       'Yêu cầu Spec Sheet'
     );
     onOpenQuoteModal?.();
@@ -93,18 +155,18 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
             <thead>
               <tr className="bg-navy-900 text-white text-[12px] font-semibold tracking-[0.5px] uppercase">
                 <th className="py-4 px-6 w-[180px]">MÃ SKU</th>
-                <th className="py-4 px-6">Danh Mục</th>
+                <th className="py-4 px-6">Sản Phẩm / Danh Mục</th>
                 <th className="py-4 px-6 w-[320px]">Kích Thước / Thông Số</th>
                 <th className="py-4 px-6 w-[160px]">Thương Hiệu</th>
                 <th className="py-4 px-6 w-[90px] text-center">Tài Liệu</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {specs.map((row, idx) => (
-                <tr key={idx} className="hover:bg-canvas transition-colors text-[13px]">
+              {rows.map((row) => (
+                <tr key={row.sku} className="hover:bg-canvas transition-colors text-[13px]">
                   <td className="py-4 px-6 font-semibold text-ink font-mono">
                     <Link
-                      href={`/products/${row.sku}`}
+                      href={`/products/${row.slug}`}
                       className="hover:text-amber-600 transition-colors inline-flex items-center gap-1"
                     >
                       <span>{row.sku}</span>
@@ -114,10 +176,10 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
                   <td className="py-4 px-6">
                     <div className="flex flex-col">
                       <Link
-                        href={`/products/${row.sku}`}
+                        href={`/products/${row.slug}`}
                         className="font-semibold text-ink hover:text-amber-600 text-[14px] transition-colors"
                       >
-                        {row.category}
+                        {row.name}
                       </Link>
                       <span className="text-ink-muted text-[12px]">{row.group}</span>
                     </div>
@@ -127,12 +189,23 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
                   <td className="py-4 px-6 text-center">
                     <button
                       type="button"
-                      onClick={() => handleRequestSpecSheet(row.sku)}
-                      aria-label={`Nhận Spec Sheet cho ${row.sku}`}
-                      title={`Nhận Spec Sheet ${row.sku}`}
+                      onClick={() => handleSpecSheetAction(row)}
+                      aria-label={
+                        row.datasheetUrl
+                          ? `Tải Spec Sheet PDF cho ${row.sku}`
+                          : `Nhận Spec Sheet cho ${row.sku}`
+                      }
+                      title={
+                        row.datasheetUrl
+                          ? `Tải Spec Sheet PDF (${row.sku})`
+                          : `Yêu cầu Spec Sheet ${row.sku}`
+                      }
                       className="min-w-[44px] min-h-[44px] hover:bg-line/50 rounded-[4px] text-ink transition-colors inline-flex items-center justify-center cursor-pointer"
                     >
-                      <FileDown className="w-5 h-5 text-ink" aria-hidden="true" />
+                      <FileDown
+                        className={`w-5 h-5 ${row.datasheetUrl ? 'text-amber-600' : 'text-ink'}`}
+                        aria-hidden="true"
+                      />
                     </button>
                   </td>
                 </tr>

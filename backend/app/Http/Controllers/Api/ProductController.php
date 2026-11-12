@@ -52,4 +52,12 @@ class ProductController extends Controller
             'data'    => ProductResource::collection($products),
         ]);
     }
+
+    public function brands(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $this->productService->getPublicBrands(),
+        ]);
+    }
 }

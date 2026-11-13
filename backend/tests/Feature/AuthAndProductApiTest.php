@@ -105,15 +105,38 @@ class AuthAndProductApiTest extends TestCase
         $quickSpecsResponse->assertStatus(200)
             ->assertJsonPath('success', true);
 
-        $product = Product::first();
+        $product = Product::with('category')->first();
         if ($product) {
-            $showResponse = $this->getJson('/api/products/' . $product->slug);
-            $showResponse->assertStatus(200)
+            // Test fetch by slug (string)
+            $showResponseBySlug = $this->getJson('/api/products/' . $product->slug);
+            $showResponseBySlug->assertStatus(200)
                 ->assertJsonStructure([
                     'success',
                     'data' => ['id', 'sku', 'name', 'slug', 'category'],
                     'related_products',
-                ]);
+                ])
+                ->assertJsonPath('data.id', $product->id);
+
+            // Test fetch by SKU (string with letters/hyphens)
+            $showResponseBySku = $this->getJson('/api/products/' . $product->sku);
+            $showResponseBySku->assertStatus(200)
+                ->assertJsonPath('data.id', $product->id);
+
+            // Test fetch by numeric ID
+            $showResponseById = $this->getJson('/api/products/' . $product->id);
+            $showResponseById->assertStatus(200)
+                ->assertJsonPath('data.id', $product->id);
+
+            // Test product list filtered by category slug
+            if ($product->category) {
+                $categorySlugResponse = $this->getJson('/api/products?category=' . $product->category->slug);
+                $categorySlugResponse->assertStatus(200)
+                    ->assertJsonPath('success', true);
+
+                $categoryIdResponse = $this->getJson('/api/products?category=' . $product->category_id);
+                $categoryIdResponse->assertStatus(200)
+                    ->assertJsonPath('success', true);
+            }
         }
     }
 

@@ -34,10 +34,12 @@ class ProductService
         }
 
         if (!empty($filters['category'])) {
-            $categorySlug = $filters['category'];
+            $categorySlug = (string) $filters['category'];
             $query->whereHas('category', function ($q) use ($categorySlug) {
-                $q->where('slug', $categorySlug)
-                  ->orWhere('id', $categorySlug);
+                $q->where('slug', $categorySlug);
+                if (ctype_digit($categorySlug)) {
+                    $q->orWhere('id', (int) $categorySlug);
+                }
             });
         }
 
@@ -74,10 +76,17 @@ class ProductService
      */
     public function getPublicProductByIdentifier(string $identifier): array
     {
+        $identifier = trim($identifier);
+
         $product = Product::with('category')
-            ->where('slug', $identifier)
-            ->orWhere('sku', $identifier)
-            ->orWhere('id', $identifier)
+            ->where(function ($q) use ($identifier) {
+                $q->where('slug', $identifier)
+                  ->orWhere('sku', $identifier);
+
+                if (ctype_digit($identifier)) {
+                    $q->orWhere('id', (int) $identifier);
+                }
+            })
             ->firstOrFail();
 
         $relatedProducts = Product::with('category')

@@ -25,6 +25,8 @@ class Product extends Model
         'has_cocq',
         'certificates',
         'is_featured',
+        'show_on_home',
+        'home_order',
         'spec_summary',
         'show_in_quick_specs',
         'quick_spec_order',
@@ -44,6 +46,8 @@ class Product extends Model
         'packaging' => 'array',
         'has_cocq' => 'boolean',
         'is_featured' => 'boolean',
+        'show_on_home' => 'boolean',
+        'home_order' => 'integer',
         'show_in_quick_specs' => 'boolean',
         'quick_spec_order' => 'integer',
     ];

@@ -5,10 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import { Category } from '@/lib/types';
+import { Category, Product } from '@/lib/types';
 
 interface ProductCategoriesProps {
   categories?: Category[];
+  homeProducts?: Product[];
 }
 
 const FALLBACK_CATEGORIES: Category[] = [
@@ -119,8 +120,9 @@ const CATEGORY_TO_PRODUCT_SLUG_MAP: Record<string, string> = {
   'boi-tron-va-khi-nen': 'dau-lam-mat-cat-got-kim-loai-pha-nuoc-ban-tong-hop-thung-20l-ax-lub-emul20l',
 };
 
-export default function ProductCategories({ categories }: ProductCategoriesProps) {
-  const items = categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES;
+export default function ProductCategories({ categories, homeProducts }: ProductCategoriesProps) {
+  const hasConfiguredProducts = Array.isArray(homeProducts) && homeProducts.length > 0;
+  const categoryItems = categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES;
 
   return (
     <section className="bg-surface py-16 lg:py-24 border-b border-line">
@@ -129,7 +131,7 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-10">
           <div className="flex flex-col gap-3 max-w-[700px]">
             <span className="text-ink-muted text-[12px] font-semibold tracking-[1.4px] uppercase">
-              01 / DANH MỤC SẢN PHẨM
+              01 / {hasConfiguredProducts ? 'SẢN PHẨM TIÊU BIỂU' : 'DANH MỤC SẢN PHẨM'}
             </span>
             <h2 className="text-[28px] sm:text-[36px] font-bold text-ink tracking-[-0.03em] leading-[1.2]">
               Thiết bị phù hợp. Cho mọi quy trình sản xuất.
@@ -140,9 +142,100 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
           </p>
         </div>
 
-        {/* Category Grid */}
+        {/* Product / Category Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((cat) => {
+          {hasConfiguredProducts
+            ? homeProducts.map((p) => {
+                const imgSrc =
+                  p.image_url ||
+                  (Array.isArray(p.images) && p.images[0]) ||
+                  '/assets/images/cat-cnc.png';
+                const detailHref = `/products/${p.slug || p.sku}`;
+
+                let highlights: { label: string; value: string }[] = [];
+                if (Array.isArray(p.highlights) && p.highlights.length > 0) {
+                  highlights = p.highlights.slice(0, 2).map((item, idx) => ({
+                    label: `Điểm mạnh ${idx + 1}`,
+                    value: item,
+                  }));
+                } else if (p.spec_summary) {
+                  highlights = [{ label: 'Quy cách', value: p.spec_summary }];
+                  if (p.brand) {
+                    highlights.push({ label: 'Hãng sản xuất', value: p.brand });
+                  }
+                } else if (p.specifications && Object.keys(p.specifications).length > 0) {
+                  highlights = Object.entries(p.specifications)
+                    .slice(0, 2)
+                    .map(([k, v]) => ({ label: k, value: String(v) }));
+                } else if (p.description) {
+                  highlights = [{ label: 'Mô tả', value: p.description }];
+                }
+
+                return (
+                  <div
+                    key={p.id ?? p.sku}
+                    className="bg-surface border border-line rounded-[8px] overflow-hidden flex flex-col hover:border-navy-900 transition-colors duration-200 group shadow-axiom-card hover:shadow-md"
+                  >
+                    {/* Product Media */}
+                    <Link
+                      href={detailHref}
+                      className="bg-canvas h-[204px] relative overflow-hidden flex items-center justify-center p-4 border-b border-line block"
+                    >
+                      <Image
+                        src={imgSrc}
+                        alt={p.name}
+                        fill
+                        unoptimized={imgSrc.startsWith('http') || imgSrc.startsWith('data:')}
+                        className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </Link>
+
+                    {/* Information */}
+                    <div className="p-6 flex flex-col flex-1 justify-between gap-5">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-ink-muted text-[12px] font-semibold tracking-[1px] uppercase">
+                            {p.category?.name || p.brand || 'THIẾT BỊ CÔNG NGHIỆP'}
+                          </span>
+                          <span className="font-mono text-[11px] font-bold text-navy-900 bg-canvas border border-line px-2 py-0.5 rounded-[4px]">
+                            {p.sku}
+                          </span>
+                        </div>
+                        <h3 className="text-[20px] font-bold text-ink tracking-[-0.02em] min-h-[48px] line-clamp-2">
+                          <Link href={detailHref} className="hover:text-amber-600 transition-colors">
+                            {p.name}
+                          </Link>
+                        </h3>
+
+                        {highlights.length > 0 && (
+                          <div className="flex flex-col gap-2.5 pt-2">
+                            {highlights.map((hl, idx) => (
+                              <div key={idx} className="flex flex-col">
+                                <span className="text-ink-dim text-[12px]">{hl.label}</span>
+                                <span className="text-ink text-[13px] font-medium line-clamp-2">
+                                  {hl.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* View Details Action */}
+                      <Button
+                        href={detailHref}
+                        variant="secondary"
+                        size="lg"
+                        className="w-full hover:bg-navy-900 hover:text-white hover:border-navy-900"
+                      >
+                        <span>Xem Chi Tiết</span>
+                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })
+            : categoryItems.map((cat) => {
             const imgSrc = cat.image_url || '/assets/images/cat-cnc.png';
             const productSlug =
               cat.featured_product_slug ||

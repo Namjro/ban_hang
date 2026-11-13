@@ -51,6 +51,22 @@ class ProductService
             $query->where('stock_status', $filters['stock_status']);
         }
 
+        if (isset($filters['show_on_home'])) {
+            $query->where('show_on_home', filter_var($filters['show_on_home'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if (isset($filters['show_in_quick_specs'])) {
+            $query->where('show_in_quick_specs', filter_var($filters['show_in_quick_specs'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if (isset($filters['has_datasheet'])) {
+            if (filter_var($filters['has_datasheet'], FILTER_VALIDATE_BOOLEAN)) {
+                $query->whereNotNull('datasheet_url')->where('datasheet_url', '!=', '');
+            } else {
+                $query->where(fn ($q) => $q->whereNull('datasheet_url')->orWhere('datasheet_url', ''));
+            }
+        }
+
         if (isset($filters['featured']) && filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN)) {
             $query->where('is_featured', true);
         }
@@ -120,6 +136,19 @@ class ProductService
     }
 
     /**
+     * Get products configured to appear on the homepage Section 01.
+     */
+    public function getHomeFeaturedProducts(int $limit = 6): Collection
+    {
+        return Product::with('category')
+            ->where('show_on_home', true)
+            ->orderBy('home_order', 'asc')
+            ->orderBy('id', 'asc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
      * Get products flagged for the homepage Quick Spec Table.
      */
     public function getQuickSpecProducts(): Collection
@@ -183,6 +212,22 @@ class ProductService
             $query->where('stock_status', $filters['stock_status']);
         }
 
+        if (isset($filters['show_on_home'])) {
+            $query->where('show_on_home', filter_var($filters['show_on_home'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if (isset($filters['show_in_quick_specs'])) {
+            $query->where('show_in_quick_specs', filter_var($filters['show_in_quick_specs'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if (isset($filters['has_datasheet'])) {
+            if (filter_var($filters['has_datasheet'], FILTER_VALIDATE_BOOLEAN)) {
+                $query->whereNotNull('datasheet_url')->where('datasheet_url', '!=', '');
+            } else {
+                $query->where(fn ($q) => $q->whereNull('datasheet_url')->orWhere('datasheet_url', ''));
+            }
+        }
+
         $perPage = (int) ($filters['per_page'] ?? 15);
 
         return $query->orderBy('id', 'desc')->paginate($perPage);
@@ -206,6 +251,8 @@ class ProductService
         $data['price_display'] = $data['price_display'] ?? 'Liên hệ báo giá';
         $data['has_cocq'] = $data['has_cocq'] ?? true;
         $data['is_featured'] = $data['is_featured'] ?? false;
+        $data['show_on_home'] = $data['show_on_home'] ?? false;
+        $data['home_order'] = (int) ($data['home_order'] ?? 0);
 
         if (!empty($data['images']) && empty($data['image_url'])) {
             $data['image_url'] = $data['images'][0];

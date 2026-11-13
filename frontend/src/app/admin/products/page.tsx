@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ArrowUpRight,
   ShieldCheck,
+  FileText,
 } from 'lucide-react';
 import { categoryService, productService } from '@/services';
 import { Product, Category, ProductPayload } from '@/lib/types';
@@ -31,6 +32,7 @@ export default function AdminProductsPage() {
   const debouncedSearch = useDebounce(search, 300);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [stockFilter, setStockFilter] = useState('');
+  const [placementFilter, setPlacementFilter] = useState('');
 
   // Pagination
   const [pagination, setPagination] = useState({
@@ -75,6 +77,9 @@ export default function AdminProductsPage() {
           search: debouncedSearch || undefined,
           category_id: categoryFilter || undefined,
           stock_status: stockFilter || undefined,
+          show_on_home: placementFilter === 'home_section_01' ? true : undefined,
+          show_in_quick_specs: placementFilter === 'home_section_02' ? true : undefined,
+          has_datasheet: placementFilter === 'has_datasheet' ? true : undefined,
         });
 
         if (res.success) {
@@ -91,7 +96,7 @@ export default function AdminProductsPage() {
         setLoading(false);
       }
     },
-    [debouncedSearch, categoryFilter, stockFilter]
+    [debouncedSearch, categoryFilter, stockFilter, placementFilter]
   );
 
   useEffect(() => {
@@ -204,6 +209,18 @@ export default function AdminProductsPage() {
             <option value="low_stock">Sắp hết hàng</option>
             <option value="pre_order">Đặt trước</option>
           </SelectField>
+
+          <SelectField
+            value={placementFilter}
+            onChange={(e) => setPlacementFilter(e.target.value)}
+            aria-label="Lọc theo vị trí hiển thị trang chủ"
+            wrapperClassName="sm:w-[220px]"
+          >
+            <option value="">Tất cả vị trí trang chủ</option>
+            <option value="home_section_01">Mục 01: SP Tiêu Biểu</option>
+            <option value="home_section_02">Mục 02: Bảng Tài Liệu</option>
+            <option value="has_datasheet">Đã có Tài Liệu PDF</option>
+          </SelectField>
         </div>
       </div>
 
@@ -286,21 +303,38 @@ export default function AdminProductsPage() {
                       </div>
                     </div>
 
-                    {(p.is_featured || p.show_in_quick_specs || p.has_cocq) && (
+                    {(p.is_featured || p.show_on_home || p.show_in_quick_specs || p.datasheet_url || p.has_cocq) && (
                       <div className="flex flex-wrap gap-1.5">
                         {p.has_cocq && (
                           <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-flex items-center gap-1">
                             <ShieldCheck className="w-3 h-3" /> CO/CQ
                           </span>
                         )}
-                        {p.is_featured && (
-                          <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
-                            Nổi bật
+                        {p.show_on_home && (
+                          <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] font-mono">
+                            Mục 01 #{p.home_order ?? 0}
                           </span>
                         )}
                         {p.show_in_quick_specs && (
-                          <span className="bg-slate-100 text-[#0b132b] border border-[#dce2ea] text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
-                            Bảng nhanh #{p.quick_spec_order ?? 0}
+                          <span className="bg-blue-100 text-blue-900 border border-blue-300 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] font-mono">
+                            Mục 02 #{p.quick_spec_order ?? 0}
+                          </span>
+                        )}
+                        {p.datasheet_url && (
+                          <a
+                            href={p.datasheet_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-flex items-center gap-1"
+                            title="Xem tài liệu PDF"
+                          >
+                            <FileText className="w-3 h-3 text-emerald-700" />
+                            <span>PDF</span>
+                          </a>
+                        )}
+                        {p.is_featured && (
+                          <span className="bg-purple-50 text-purple-800 border border-purple-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                            Nổi bật
                           </span>
                         )}
                       </div>
@@ -408,16 +442,33 @@ export default function AdminProductsPage() {
                               .join(' • ')}
                           </div>
                         )}
-                        {(p.is_featured || p.show_in_quick_specs) && (
+                        {(p.is_featured || p.show_on_home || p.show_in_quick_specs || p.datasheet_url) && (
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {p.is_featured && (
-                              <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
-                                Nổi bật
+                            {p.show_on_home && (
+                              <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] font-mono">
+                                Mục 01 #{p.home_order ?? 0}
                               </span>
                             )}
                             {p.show_in_quick_specs && (
-                              <span className="bg-slate-100 text-[#0b132b] border border-[#dce2ea] text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
-                                Bảng nhanh #{p.quick_spec_order ?? 0}
+                              <span className="bg-blue-100 text-blue-900 border border-blue-300 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] font-mono">
+                                Mục 02 #{p.quick_spec_order ?? 0}
+                              </span>
+                            )}
+                            {p.datasheet_url && (
+                              <a
+                                href={p.datasheet_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px] inline-flex items-center gap-1"
+                                title="Xem tài liệu PDF"
+                              >
+                                <FileText className="w-3 h-3 text-emerald-700" />
+                                <span>PDF</span>
+                              </a>
+                            )}
+                            {p.is_featured && (
+                              <span className="bg-purple-50 text-purple-800 border border-purple-200 text-[10px] font-semibold px-1.5 py-0.5 rounded-[2px]">
+                                Nổi bật
                               </span>
                             )}
                           </div>

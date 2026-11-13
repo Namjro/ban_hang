@@ -11,16 +11,20 @@ import QuoteRequestForm from '@/components/landing/QuoteRequestForm';
 import Footer from '@/components/landing/Footer';
 import FloatingContactBubble from '@/components/landing/FloatingContactBubble';
 import ContactModal from '@/components/landing/ContactModal';
-import { Category, SiteSettings } from '@/lib/types';
+import { Category, Product, SiteSettings } from '@/lib/types';
 
 interface LandingHomeClientProps {
   initialSettings: SiteSettings;
   initialCategories: Category[];
+  initialHomeProducts?: Product[];
+  initialQuickSpecs?: Product[];
 }
 
 export default function LandingHomeClient({
   initialSettings,
   initialCategories,
+  initialHomeProducts,
+  initialQuickSpecs,
 }: LandingHomeClientProps) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const settings = initialSettings;
@@ -38,8 +42,14 @@ export default function LandingHomeClient({
           settings={settings.hero}
         />
         <TrustBar settings={settings.trust_stats} />
-        <ProductCategories categories={homeCategories} />
-        <QuickSpecTable onOpenQuoteModal={() => setIsQuoteModalOpen(true)} />
+        <ProductCategories
+          categories={homeCategories}
+          homeProducts={initialHomeProducts}
+        />
+        <QuickSpecTable
+          onOpenQuoteModal={() => setIsQuoteModalOpen(true)}
+          initialProducts={initialQuickSpecs}
+        />
         <WarehouseCapabilities settings={settings.capabilities} />
         <QuoteRequestForm company={settings.company} />
       </main>

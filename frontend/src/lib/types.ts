@@ -51,6 +51,8 @@ export interface Product {
   price_display: string;
   has_cocq: boolean;
   is_featured: boolean;
+  show_on_home?: boolean;
+  home_order?: number;
   show_in_quick_specs?: boolean;
   quick_spec_order?: number;
   category?: Category;
@@ -138,6 +140,9 @@ export interface ProductFilterParams {
   brand?: string;
   stock_status?: string;
   featured?: boolean;
+  show_on_home?: boolean;
+  show_in_quick_specs?: boolean;
+  has_datasheet?: boolean;
   sort_by?: string;
   sort_order?: 'asc' | 'desc';
 }
@@ -148,6 +153,9 @@ export interface AdminProductFilterParams {
   search?: string;
   category_id?: string | number;
   stock_status?: string;
+  show_on_home?: boolean;
+  show_in_quick_specs?: boolean;
+  has_datasheet?: boolean;
 }
 
 export interface ProductPayload {
@@ -171,6 +179,8 @@ export interface ProductPayload {
   meta_description?: string | null;
   meta_keywords?: string | null;
   is_featured?: boolean;
+  show_on_home?: boolean;
+  home_order?: number;
   show_in_quick_specs?: boolean;
   quick_spec_order?: number;
 }

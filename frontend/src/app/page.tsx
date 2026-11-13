@@ -8,7 +8,9 @@ import {
   buildWebSiteJsonLd,
 } from '@/lib/seo';
 import {
+  getServerHomeFeaturedProducts,
   getServerPublicCategories,
+  getServerQuickSpecProducts,
   getServerSiteSettings,
 } from '@/services/server-public.service';
 
@@ -20,9 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LandingHomePage() {
-  const [settings, homeCategories] = await Promise.all([
+  const [settings, homeCategories, homeFeaturedProducts, quickSpecProducts] = await Promise.all([
     getServerSiteSettings(),
     getServerPublicCategories({ home: true }),
+    getServerHomeFeaturedProducts(),
+    getServerQuickSpecProducts(),
   ]);
 
   const organizationJsonLd = buildOrganizationJsonLd(settings.company);
@@ -35,6 +39,8 @@ export default async function LandingHomePage() {
       <LandingHomeClient
         initialSettings={settings}
         initialCategories={homeCategories}
+        initialHomeProducts={homeFeaturedProducts}
+        initialQuickSpecs={quickSpecProducts}
       />
     </>
   );

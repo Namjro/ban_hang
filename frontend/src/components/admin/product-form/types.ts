@@ -19,6 +19,8 @@ export interface ProductFormState {
   certificates: string[];
   datasheet_url: string;
   is_featured: boolean;
+  show_on_home: boolean;
+  home_order: number;
   show_in_quick_specs: boolean;
   quick_spec_order: number;
   highlights: string[];

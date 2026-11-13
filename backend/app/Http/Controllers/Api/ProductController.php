@@ -43,6 +43,16 @@ class ProductController extends Controller
         ]);
     }
 
+    public function homeFeatured(): JsonResponse
+    {
+        $products = $this->productService->getHomeFeaturedProducts();
+
+        return response()->json([
+            'success' => true,
+            'data'    => ProductResource::collection($products),
+        ]);
+    }
+
     public function quickSpecs(): JsonResponse
     {
         $products = $this->productService->getQuickSpecProducts();

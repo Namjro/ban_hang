@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
+    Route::get('/home-featured', [ProductController::class, 'homeFeatured']);
     Route::get('/quick-specs', [ProductController::class, 'quickSpecs']);
     Route::get('/brands', [ProductController::class, 'brands']);
     Route::get('/sitemap', [ProductController::class, 'sitemap']);

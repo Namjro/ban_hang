@@ -9,6 +9,7 @@ import { productService } from '@/services';
 
 interface QuickSpecTableProps {
   onOpenQuoteModal?: () => void;
+  initialProducts?: Product[];
 }
 
 interface QuickSpecRow {
@@ -93,9 +94,14 @@ function formatProductRow(p: Product): QuickSpecRow {
   };
 }
 
-export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps) {
+export default function QuickSpecTable({ onOpenQuoteModal, initialProducts }: QuickSpecTableProps) {
   const toast = useToast();
-  const [rows, setRows] = useState<QuickSpecRow[]>(FALLBACK_SPECS);
+  const [rows, setRows] = useState<QuickSpecRow[]>(() => {
+    if (Array.isArray(initialProducts) && initialProducts.length > 0) {
+      return initialProducts.map(formatProductRow);
+    }
+    return FALLBACK_SPECS;
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -107,7 +113,7 @@ export default function QuickSpecTable({ onOpenQuoteModal }: QuickSpecTableProps
         }
       })
       .catch(() => {
-        // Keep FALLBACK_SPECS on error
+        // Keep initial / fallback specs on error
       });
     return () => {
       isMounted = false;

@@ -73,6 +73,22 @@ export async function getServerPublicCategories(params?: {
   return res?.success && Array.isArray(res.data) ? res.data : [];
 }
 
+export async function getServerHomeFeaturedProducts(): Promise<Product[]> {
+  const res = await fetchServerJson<ApiResponse<Product[]>>(
+    '/products/home-featured',
+    120
+  );
+  return res?.success && Array.isArray(res.data) ? res.data : [];
+}
+
+export async function getServerQuickSpecProducts(): Promise<Product[]> {
+  const res = await fetchServerJson<ApiResponse<Product[]>>(
+    '/products/quick-specs',
+    120
+  );
+  return res?.success && Array.isArray(res.data) ? res.data : [];
+}
+
 export async function getServerPublicBrands(): Promise<string[]> {
   const res = await fetchServerJson<ApiResponse<string[]>>('/products/brands', 300);
   return res?.success && Array.isArray(res.data) ? res.data : [];

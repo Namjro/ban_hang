@@ -227,6 +227,15 @@ class ProductSeeder extends Seeder
             'AX-LUB-EMUL20L'=> ['order' => 6, 'summary' => 'Xô 20 Lít, tỷ lệ pha 5–8% chống gỉ tốt'],
         ];
 
+        $homeFeaturedMap = [
+            'AX-CNC-VMC850'  => 1,
+            'AX-EM-4FL-10'   => 2,
+            'AX-PM-150'      => 3,
+            'AX-WH-100'      => 4,
+            'AX-BR-6205-2RS' => 5,
+            'AX-LUB-EMUL20L' => 6,
+        ];
+
         $productGlobalIndex = 0;
         foreach ($categoriesData as $catData) {
             $products = $catData['products'];
@@ -251,6 +260,7 @@ class ProductSeeder extends Seeder
                 ];
 
                 $quickSpec = $quickSpecMap[$p['sku']] ?? null;
+                $homeOrder = $homeFeaturedMap[$p['sku']] ?? null;
 
                 Product::updateOrCreate(
                     ['sku' => $p['sku']],
@@ -269,8 +279,11 @@ class ProductSeeder extends Seeder
                         'has_cocq' => true,
                         'certificates' => $certs,
                         'is_featured' => $p['featured'],
+                        'show_on_home' => $homeOrder !== null,
+                        'home_order' => $homeOrder ?? 0,
                         'show_in_quick_specs' => $quickSpec !== null,
                         'quick_spec_order' => $quickSpec['order'] ?? 0,
+                        'datasheet_url' => $quickSpec !== null ? ('/assets/docs/' . strtolower($p['sku']) . '-datasheet.pdf') : null,
                     ]
                 );
 

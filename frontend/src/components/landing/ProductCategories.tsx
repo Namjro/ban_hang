@@ -17,6 +17,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Máy CNC & Máy Công Cụ',
     subtitle: 'GIA CÔNG CƠ KHÍ',
     slug: 'may-cnc-va-may-cong-cu',
+    featured_product_slug: 'trung-tam-gia-cong-dung-cnc-vmc-850-ax-cnc-vmc850',
     description: null,
     icon: 'factory',
     image_url: '/assets/images/cat-cnc.png',
@@ -32,6 +33,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Dụng Cụ Cắt Gọt',
     subtitle: 'DỤNG CỤ CẮT GỌT',
     slug: 'dung-cu-cat-got',
+    featured_product_slug: 'dao-phay-ngon-hop-kim-4-me-o10mm-phu-tialn-ax-em-4fl-10',
     description: null,
     icon: 'crosshair',
     image_url: '/assets/images/cat-cutting.png',
@@ -47,6 +49,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Dụng Cụ Đo Lường Chính Xác',
     subtitle: 'ĐO LƯỜNG CHÍNH XÁC',
     slug: 'do-luong-chinh-xac',
+    featured_product_slug: 'thuoc-kep-dien-tu-do-trong-ngoai-0-150mm-ip67-ax-pm-150',
     description: null,
     icon: 'scan-line',
     image_url: '/assets/images/cat-measuring.png',
@@ -62,6 +65,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Gá Đặt & Phụ Kiện Máy',
     subtitle: 'GÁ ĐẶT & ĐỒ GÁ',
     slug: 'ga-dat-va-phu-kien-may',
+    featured_product_slug: 'e-to-may-phay-co-khi-thuy-luc-luc-kep-khoe-vh-100-ax-wh-100',
     description: null,
     icon: 'boxes',
     image_url: '/assets/images/cat-fixture.png',
@@ -77,6 +81,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Bạc Đạn & Truyền Động Tuyến Tính',
     subtitle: 'TRUYỀN ĐỘNG CƠ KHÍ',
     slug: 'bac-dan-va-truyen-dong',
+    featured_product_slug: 'vong-bi-bac-dan-cau-ranh-sau-6205-2rs-nap-cao-su-ax-br-6205-2rs',
     description: null,
     icon: 'crosshair',
     image_url: '/assets/images/cat-bearing.png',
@@ -92,6 +97,7 @@ const FALLBACK_CATEGORIES: Category[] = [
     name: 'Bôi Trơn & Khí Nén',
     subtitle: 'VẬT TƯ TIÊU HAO',
     slug: 'boi-tron-va-khi-nen',
+    featured_product_slug: 'dau-lam-mat-cat-got-kim-loai-pha-nuoc-ban-tong-hop-thung-20l-ax-lub-emul20l',
     description: null,
     icon: 'truck',
     image_url: '/assets/images/cat-pneumatic.png',
@@ -129,6 +135,11 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((cat) => {
             const imgSrc = cat.image_url || '/assets/images/cat-cnc.png';
+            const productSlug =
+              cat.featured_product_slug ||
+              (Array.isArray(cat.products) && cat.products[0]?.slug) ||
+              cat.slug;
+            const detailHref = `/products/${productSlug}`;
             const highlights =
               cat.highlights && cat.highlights.length > 0
                 ? cat.highlights
@@ -142,15 +153,18 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
                 className="bg-surface border border-line rounded-[8px] overflow-hidden flex flex-col hover:border-navy-900 transition-colors duration-200 group shadow-axiom-card hover:shadow-md"
               >
                 {/* Product Media */}
-                <div className="bg-canvas h-[204px] relative overflow-hidden flex items-center justify-center p-4 border-b border-line">
+                <Link
+                  href={detailHref}
+                  className="bg-canvas h-[204px] relative overflow-hidden flex items-center justify-center p-4 border-b border-line block"
+                >
                   <Image
                     src={imgSrc}
                     alt={cat.name}
                     fill
                     unoptimized={imgSrc.startsWith('http')}
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                </div>
+                </Link>
 
                 {/* Information */}
                 <div className="p-6 flex flex-col flex-1 justify-between gap-5">
@@ -159,7 +173,9 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
                       {cat.subtitle || 'DANH MỤC THIẾT BỊ'}
                     </span>
                     <h3 className="text-[20px] font-bold text-ink tracking-[-0.02em] min-h-[48px] line-clamp-2">
-                      {cat.name}
+                      <Link href={detailHref} className="hover:text-amber-600 transition-colors">
+                        {cat.name}
+                      </Link>
                     </h3>
 
                     {highlights.length > 0 && (
@@ -178,7 +194,7 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
 
                   {/* View Details Action */}
                   <Button
-                    href={`/products?category=${cat.slug}`}
+                    href={detailHref}
                     variant="secondary"
                     size="lg"
                     className="w-full hover:bg-navy-900 hover:text-white hover:border-navy-900"

@@ -23,6 +23,7 @@ class CategoryResource extends JsonResource
             'meta_title'       => $this->meta_title,
             'meta_description' => $this->meta_description,
             'meta_keywords'    => $this->meta_keywords,
+            'featured_product_slug' => $this->whenLoaded('products', fn () => $this->products->first()?->slug ?? $this->products->first()?->sku),
             'products_count' => $this->when(isset($this->products_count), $this->products_count),
             'products'       => ProductResource::collection($this->whenLoaded('products')),
             'created_at'     => $this->created_at,

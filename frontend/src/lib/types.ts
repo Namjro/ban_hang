@@ -17,6 +17,7 @@ export interface Category {
   image_url?: string | null;
   highlights?: CategoryHighlight[];
   show_on_home?: boolean;
+  featured_product_slug?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
   meta_keywords?: string | null;
@@ -183,6 +184,7 @@ export interface CategoryPayload {
   image_url?: string | null;
   highlights?: CategoryHighlight[];
   show_on_home?: boolean;
+  featured_product_slug?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
   meta_keywords?: string | null;

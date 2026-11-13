@@ -20,6 +20,7 @@ class CategoryService
     public function getPublicCategories(bool $homeOnly = false): Collection
     {
         return Category::withCount('products')
+            ->with(['products' => fn ($q) => $q->orderBy('is_featured', 'desc')->orderBy('id', 'asc')])
             ->when($homeOnly, fn ($q) => $q->where('show_on_home', true))
             ->orderBy('order', 'asc')
             ->orderBy('id', 'asc')

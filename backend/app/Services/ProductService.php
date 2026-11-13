@@ -87,7 +87,25 @@ class ProductService
                     $q->orWhere('id', (int) $identifier);
                 }
             })
-            ->firstOrFail();
+            ->first();
+
+        if (!$product) {
+            $category = Category::where('slug', $identifier)
+                ->when(ctype_digit($identifier), fn ($q) => $q->orWhere('id', (int) $identifier))
+                ->first();
+
+            if ($category) {
+                $product = Product::with('category')
+                    ->where('category_id', $category->id)
+                    ->orderBy('is_featured', 'desc')
+                    ->orderBy('id', 'asc')
+                    ->first();
+            }
+        }
+
+        if (!$product) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Không tìm thấy sản phẩm phù hợp.');
+        }
 
         $relatedProducts = Product::with('category')
             ->where('category_id', $product->category_id)

@@ -110,6 +110,15 @@ const FALLBACK_CATEGORIES: Category[] = [
   },
 ];
 
+const CATEGORY_TO_PRODUCT_SLUG_MAP: Record<string, string> = {
+  'may-cnc-va-may-cong-cu': 'trung-tam-gia-cong-dung-cnc-vmc-850-ax-cnc-vmc850',
+  'dung-cu-cat-got': 'dao-phay-ngon-hop-kim-4-me-o10mm-phu-tialn-ax-em-4fl-10',
+  'do-luong-chinh-xac': 'thuoc-kep-dien-tu-do-trong-ngoai-0-150mm-ip67-ax-pm-150',
+  'ga-dat-va-phu-kien-may': 'e-to-may-phay-co-khi-thuy-luc-luc-kep-khoe-vh-100-ax-wh-100',
+  'bac-dan-va-truyen-dong': 'vong-bi-bac-dan-cau-ranh-sau-6205-2rs-nap-cao-su-ax-br-6205-2rs',
+  'boi-tron-va-khi-nen': 'dau-lam-mat-cat-got-kim-loai-pha-nuoc-ban-tong-hop-thung-20l-ax-lub-emul20l',
+};
+
 export default function ProductCategories({ categories }: ProductCategoriesProps) {
   const items = categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES;
 
@@ -137,8 +146,9 @@ export default function ProductCategories({ categories }: ProductCategoriesProps
             const imgSrc = cat.image_url || '/assets/images/cat-cnc.png';
             const productSlug =
               cat.featured_product_slug ||
+              CATEGORY_TO_PRODUCT_SLUG_MAP[cat.slug] ||
               (Array.isArray(cat.products) && cat.products[0]?.slug) ||
-              cat.slug;
+              CATEGORY_TO_PRODUCT_SLUG_MAP['may-cnc-va-may-cong-cu'];
             const detailHref = `/products/${productSlug}`;
             const highlights =
               cat.highlights && cat.highlights.length > 0
